@@ -49,12 +49,19 @@ class Patient(BaseModel):
     note = Column(String(50))
     # receipts = relationship('Receipt', backref='patient', lazy=True)
 
+class Anamnesis(BaseModel):
+    anamesis = Column(String(50))
+    patient_id = Column(String(50), ForeignKey(Patient.id), nullable=False)
+
+
 class PhieuKham(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
-    #stt
-    #trieuchung
-    #chuandoan
-    # #maBN
+    stt = Column(Integer)
+    trieu_chung = Column(String(50), nullable=False)
+    chuan_doan = Column(String(50), nullable=False)
+    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    #
+
 class ToaThuoc(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
     #khoaNgoaiPK
@@ -87,6 +94,11 @@ class Category(BaseModel):
     def __str__(self):
         return self.name
 
+class DrugPriceBill(BaseModel):
+    create_date = Column(DateTime, nullable=False)
+    drug_price = Column(Float, default=0)
+    medical_costs = Column(Float,)
+    #MaToa
 
 class Drug(BaseModel):
     __tablename__ = 'drug'

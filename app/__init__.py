@@ -11,6 +11,7 @@ app = Flask(__name__)
 # nhap chuoi khong can qui tac
 app.secret_key = '&&^$*JDLSJFosidjfos45454'
 # chuoi ket noi den csdl mysql
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/librarydb?charset=utf8mb4' % quote('Admin@123')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%s@localhost/quanliphongmachdb?charset=utf8mb4' % quote('Admin@123')
 #bat de khi bo sung thi no thong bao
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
