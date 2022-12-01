@@ -19,7 +19,7 @@ function addToCart(id, name, price) {
         console.info(data)
         let d = document.getElementsByClassName("cart-counter")
         for (let i = 0; i < d.length; i++)
-            d[i].innerText = data.total_quantity
+            d[i].innerText = data.total_amount
     })// promise
     }
 

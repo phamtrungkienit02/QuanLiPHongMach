@@ -1,0 +1,39 @@
+
+
+.BoxDuyet {
+}
+
+div.imgBenhNhan {
+    width: 100px;
+}
+
+div.imgBenhNhan > img {
+    width: 100%;
+}
+
+
+.BoxChuaDuyet {
+    background: lightgreen;
+}
+
+
+.item {
+    margin: 20px;
+    background: lightblue;
+    width: 100%;
+}
+
+div.infoBenhNhan {
+    display:flex;
+}
+
+
+.BoxDaDuyet {
+    display: flex;
+    background: #fff;
+    border: 3px double black
+}
+
+.BoxDaDuyet i {
+    padding: 20px;
+}

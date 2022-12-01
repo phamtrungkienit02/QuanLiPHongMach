@@ -1,16 +1,23 @@
 import math
 
+import cloudinary.uploader
 from flask import render_template, request, redirect, session, jsonify, url_for
 from app import app, login, utils, models
 from app.models import *
 from flask_login import login_user, logout_user
 from app.decorator import annonynous_user
-
+import cloudinary.uploader
+import json
+@app.context_processor # giúp render tất cả các trang
+def common_response():
+    return {
+        'menu' : utils.load_menu()
+    }
 
 @app.route('/')
 def index():
     menu = utils.load_menu()
-    return render_template('index.html', menu=menu)
+    return render_template('index.html')
 
 
 @app.route('/api/cart', methods=['post'])
@@ -48,14 +55,26 @@ def dangKyKham():
     hoTen = ''
     namSinh = ''
     gioiTinh = ''
+    avatar_path = None
     if request.method.__eq__('POST'):
+
         hoTen = request.form.get('hoTen')
         namSinh = request.form.get('namSinh')
         diaChi = request.form.get('diaChi')
         gioiTinh = request.form.get('gioiTinh')
+        ngayKham = request.form.get('ngayKham')
+        avatar = ''
+        if request.files:
+            res = cloudinary.uploader.upload(request.files['avatar'])
+            avatar = res['secure_url']
+
         try:
 
-            utils.them_benhnhan_cho_duyet(hoTen=hoTen, namSinh=namSinh, diaChi=diaChi, gioiTinh=gioiTinh)
+
+            utils.them_benhnhan_cho_duyet(hoTen=hoTen,namSinh=namSinh,diaChi=diaChi,
+                                          gioiTinh=gioiTinh,
+                                          ngayKham=ngayKham,
+                                          avatar=avatar)
             return redirect(url_for(('index')))
 
         except Exception as ex:
@@ -69,7 +88,6 @@ def lapPhieuKham():
     menu = utils.load_menu()
 
     return render_template('lapPhieuKham.html', menu=menu)
-
 
 @app.route('/bacsy')
 def bacsy():
@@ -92,8 +110,10 @@ def nvtn():
 @app.route('/duyetDanhSach')
 def duyetDanhSach():
     menu = utils.load_menu()
+    ngayKhamFind  = request.args.get('ngayKhamFind')
+    QueueToAdd = utils.load_QueueToAdd(ngayKham=ngayKhamFind)
 
-    return render_template('duyetDanhSach.html', menu=menu)
+    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd,menu=menu, stats = utils.listKham_stats(session.get('listKham')))
 
 
 @app.route('/thanhToan')
@@ -150,6 +170,35 @@ def admin():
     menu = utils.load_menu()
 
     return render_template('admin.html', menu=menu)
+
+@app.route('/api/listKham', methods = ['post'])
+def add_to_listKham():
+    data= request.json
+
+    key = app.config['LIST_KHAM_KEY']
+
+    listKham = session[key] if key in session else {}
+
+    id = str(data[id])
+    hoTen = str(data['hoTen'])
+    diaChi = data['diaChi']
+    namSinh = data['namSinh']
+    gioiTinh = data['gioiTinh']
+    sdt = data['sdt']
+    ngayKham = data['ngayKham']
+    avatar = data['avatar']
+    listKham[id] = {
+        "hoTen": hoTen,
+        "diaChi": diaChi,
+        "gioiTinh": gioiTinh,
+        "namSinh": namSinh,
+        "sdt": sdt,
+        "ngayKham": ngayKham,
+        "avatar": avatar,
+    }
+    session[key] = listKham
+
+    return jsonify(utils.listKham_stats(listKham))
 
 
 if __name__ == '__main__':

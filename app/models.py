@@ -22,11 +22,13 @@ class BaseModel(db.Model):
 class QueueToAdd(BaseModel):
     __tablename__ = "QueueToAdd"
 
-    hoTen = Column(String(50), nullable=False, default="Anonymous")
+    hoTen = Column(String(50), nullable=False, unique =True)
     gioiTinh = Column(String(50), nullable=False, default="nam")
-    namSinh = Column(DateTime, nullable=False, default='0/0/2002')
-    diaChi = Column(String(100))
-
+    namSinh = Column(DateTime, nullable=False)
+    sdt = Column(String(11) )
+    diaChi = Column(String(50))
+    ngayKham = Column(DateTime, nullable=False, default= datetime.now())
+    avatar = Column(String(200), nullable= False, default = "avatar")
     def __str__(self):
         return self.hoTen
 
@@ -58,10 +60,12 @@ class Sex(UserEnum):
 class Patient(BaseModel):
     username = Column(String(50), nullable=False, unique=True)
     birthday = Column(DateTime, nullable=False)
-    sex = Column(Enum(Sex), nullable=False)
+    sex = Column(String(50), nullable=False)
     address = Column(String(50), nullable=False)
     phone = Column(String(11))
     note = Column(String(50))
+    avatar = Column(String(200), nullable= False, default = "avatar")
+
     # receipts = relationship('Receipt', backref='patient', lazy=True)
 
 

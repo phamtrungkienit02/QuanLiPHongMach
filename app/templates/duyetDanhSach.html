@@ -1,15 +1,85 @@
 {%extends "layout/base.html"%}
 
-{%block title%}Dang Ky Kham benh truc tuyen{%endblock%}
+{%block title%}duyetDanhSach{%endblock%}
 {%block header%}
 {%include 'layout/header.html'%}
 {%endblock%}
 {%block css%}
-<link rel="stylesheet" href="{{url_for('static', filename = 'css/dangNhap.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/duyetDanhSach.css')}}">
 {%endblock%}
 
 {% block content%}
-  <h1>duyetDanhSach</h1>
+<h1>duyetDanhSach</h1>
+<form method='get'>
+    <label for="ngayKhamFind">Tìm kiếm đơn chờ duyệt đăng ký khám theo ngày</label>
+    <input type="date" name="ngayKhamFind" id="ngayKhamFind">
+    <button type="submit" class="btn btn-primary">Tìm</button>
+</form>
+
+<div class="BoxDuyet row">
+    <div class="BoxChuaDuyet col-6">
+        {% for bn in QueueToAdd %}
+        <div class="item col-11">
+            <div class="imgBenhNhan">
+                <img src="{{bn.avatar}}" alt="anhBenhNhan">
+            </div>
+            <div class="infoBenhNhan">
+                <p>MaBN: {{bn.id}}</p>
+                <p>HoTen: {{bn.hoTen}}</p>
+                <p>sdt: {{bn.sdt}}</p>
+                <p>NgayKham: {{bn.ngayKham}}</p>
+            </div>
+            <div class="BoxThemSuaXoa">
+                <a href="javascript:;" onclick="addToListKham(
+                    '{{bn.hoTen}}',
+                 {{bn.namSinh}},
+                  '{{bn.diaChi}}',
+                   '{{bn.gioiTinh}}',
+                   {{bn.ngayKham}},
+                   '{{bn.avatar}}',
+                   '{{bn.sdt}}')" class="btn btn-danger">Duyệt</a>
+            </div>
+        </div>
+        {% endfor %}
+
+
+    </div>
+
+    <div class="BoxDaDuyet col-6">
+        <span class="totalBox">
+            0
+        </span>
+        amount
+        <div>
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+            <div>
+                <i class="fa-solid fa-user-nurse"></i>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
 {%endblock%}
 
 
