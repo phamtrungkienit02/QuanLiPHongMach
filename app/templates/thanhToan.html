@@ -1,0 +1,21 @@
+{%extends "layout/base.html"%}
+
+{%block title%}Dang Ky Kham benh truc tuyen{%endblock%}
+{%block header%}
+{%include 'layout/header.html'%}
+{%endblock%}
+{%block css%}
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/dangNhap.css')}}">
+{%endblock%}
+
+{% block content%}
+ <h1>Thanh toán</h1>
+{%endblock%}
+
+
+{%block footer%}
+{%include 'layout/footer.html'%}
+
+{%endblock%}
+
+

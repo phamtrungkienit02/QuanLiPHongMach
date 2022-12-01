@@ -1,0 +1,47 @@
+{%extends "layout/base.html"%}
+
+{%block title%}Dang Ky Kham benh truc tuyen{%endblock%}
+{%block header%}
+{%include 'layout/header.html'%}
+{%endblock%}
+{%block css%}
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/dangNhap.css')}}">
+{%endblock%}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-6 ads">
+        <img src="./static/img/logo.png" alt="">
+        <h1><span id="fl">Vui lòng đăng nhập đúng loại user </span></h1>
+    </div>
+    <div class="col-md-6 login-form">
+        <div class="profile-img">
+            <img src="./static/img/bacsy.jfif"
+                 alt="profile_img" height="140px" width="140px;">
+        </div>
+        <h3>Login</h3>
+        <form method="post">
+            <div class="form-group">
+                <input type="text" class="form-control" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Đăng nhập" class="btn btn-danger"/>
+            </div>
+            <div class="form-group forget-password">
+                <a href="#">Forget Password</a>
+            </div>
+        </form>
+    </div>
+</div>
+{%endblock%}
+
+
+{%block footer%}
+{%include 'layout/footer.html'%}
+
+{%endblock%}
+
+

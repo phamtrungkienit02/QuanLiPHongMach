@@ -1,0 +1,68 @@
+
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
+body {
+    font-family: 'Numans', sans-serif;
+
+}
+nav div {
+     overflow: hidden;
+
+}
+
+div.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: lightblue;
+    padding: 10px;
+}
+div.left-header {
+    width: 100px;
+}
+
+div.left-header > img{
+    width: 100%;
+}
+
+footer {
+    background: lightblue;
+}
+
+div.boxCopyRight {
+
+    text-align: center;
+    background: black;
+    color: white;
+}
+
+
+/*dangKyKham*/
+div.boxFormDangKyKham {
+    background: lightblue;
+    margin: 100px 0;
+    padding: 20px;
+    overflow: hidden;
+}
+
+div.boxFormDangKyKham label {
+        color: #0d6efd;
+
+}
+
+
+
+h1.txtTitleBoxFormDangKyKham {
+
+    text-align: center;
+    color: #0d6efd;
+}
+
+
+/*lapPhieuKham*/
+
+
+/*dangNhap*/
+
+
+/*thongKe*/

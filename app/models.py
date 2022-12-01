@@ -1,21 +1,51 @@
-from app import db, app
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, Enum
-from sqlalchemy.orm import relationship
-from enum import Enum as UserEnum
-from flask_login import UserMixin
+from sqlalchemy import Column, String, Integer, Float, Enum, Text, ForeignKey, DateTime, Boolean
+from sqlalchemy.orm import relationship, backref
 from datetime import datetime
+from flask_login import UserMixin
+from enum import Enum as UserEnum
+
+from app import app, db
+class UserRole(UserEnum):
+    USER = 1
+    ADMIN = 2
+    BACSY = 3
+    YTA = 4  # y tá
+    NVTN = 5  # nhân viên thu ngân
 
 
 class BaseModel(db.Model):
-    # lenh nay nham khong tao bang trong csdl
     __abstract__ = True
-    # kieu int, khoa chinh, tu dong tang
+
     id = Column(Integer, primary_key=True, autoincrement=True)
-class UserRole(UserEnum):
-    ADMIN = 1
-    DOCTOR = 2
-    NURSE = 3
-    CASHIER = 4
+
+
+class QueueToAdd(BaseModel):
+    __tablename__ = "QueueToAdd"
+
+    hoTen = Column(String(50), nullable=False, default="Anonymous")
+    gioiTinh = Column(String(50), nullable=False, default="nam")
+    namSinh = Column(DateTime, nullable=False, default='0/0/2002')
+    diaChi = Column(String(100))
+
+    def __str__(self):
+        return self.hoTen
+
+
+class User(BaseModel, UserMixin):
+    name = Column(String(50), nullable=False)
+    username = Column(String(50), nullable=False, unique=True)
+    password = Column(String(50), nullable=False)
+    avatar = Column(String(100), nullable=False,
+                    default="https://vcdn1-giaitri.vnecdn.net/2020/08/18/gdragonava1-1597716430-7452-1597716741.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=dyDAM635cysU8i5PT64U9g")
+    active = Column(Boolean, default=True)
+    user_role = Column(String(50), default="USER", nullable=False)
+
+    # receipts = relationship('Receipt', backref='user', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+    # kiên
 
 
 class Sex(UserEnum):
@@ -23,21 +53,6 @@ class Sex(UserEnum):
     FEMALE = 2
 
 
-class User(BaseModel, UserMixin):
-    name = Column(String(50), nullable=False)
-    username = Column(String(50), nullable=False, unique=True)
-    password = Column(String(50), nullable=False)
-    avatar = Column(String(100))
-    email = Column(String(50))
-    # active = Column(Boolean, default=True)
-    joined_date = Column(DateTime, default=datetime.now())
-    permission = Column(String(20), nullable=False)
-    user_role = Column(Enum(UserRole), nullable=False)
-
-    # receipts = relationship('Receipt', backref='user', lazy=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Patient(BaseModel):
@@ -49,34 +64,40 @@ class Patient(BaseModel):
     note = Column(String(50))
     # receipts = relationship('Receipt', backref='patient', lazy=True)
 
-class PhieuKham(BaseModel):
-    created_date = Column(DateTime, default=datetime.now())
-    #stt
-    #trieuchung
-    #chuandoan
-    # #maBN
-class ToaThuoc(BaseModel):
-    created_date = Column(DateTime, default=datetime.now())
-    #khoaNgoaiPK
+
+class Anamnesis(BaseModel):
+    anamesis = Column(String(50))
     patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
 
 
-# class ReceiptDetail(db.Model):
-# receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False, primary_key=True)
-# product_id = Column(Integer, ForeignKey(Product.id), nullable=False, primary_key=True)
-# quantity = Column(Integer, default=0)
-# unit_price = Column(Float, default=0)
-# class Receipt(db.Model):
-#     created_date = Column(DateTime, default=datetime.now())
+class PhieuKham(BaseModel):
+    created_date = Column(DateTime, default=datetime.now())
+    stt = Column(Integer, autoincrement=True)
+    trieu_chung = Column(String(50), nullable=False)
+    chuan_doan = Column(String(50), nullable=False)
+    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    #
 
 
+class ToaThuoc(BaseModel):
+    created_date = Column(DateTime, default=datetime.now())
+    # khoaNgoaiPK
+    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
 
-# class HoaDonThuoc
-# created_date = Column(DateTime, default=datetime.now())
-#     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
-#     details = relationship('ReceiptDetail', backref='receipt', lazy=True)
+    # class ReceiptDetail(db.Model):
+    # receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False, primary_key=True)
+    # product_id = Column(Integer, ForeignKey(Product.id), nullable=False, primary_key=True)
+    # quantity = Column(Integer, default=0)
+    # unit_price = Column(Float, default=0)
+    # class Receipt(db.Model):
+    #     created_date = Column(DateTime, default=datetime.now())
 
-# class ChiTietToaThuoc
+    # class HoaDonThuoc
+    # created_date = Column(DateTime, default=datetime.now())
+    #     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    #     details = relationship('ReceiptDetail', backref='receipt', lazy=True)
+
+    # class ChiTietToaThuoc
 
 
 class Category(BaseModel):
@@ -86,6 +107,13 @@ class Category(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class DrugPriceBill(BaseModel):
+    create_date = Column(DateTime, nullable=False)
+    drug_price = Column(Float, default=0)
+    medical_costs = Column(Float, )
+    # MaToa
 
 
 class Drug(BaseModel):
@@ -101,9 +129,26 @@ class Drug(BaseModel):
         return self.name
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     with app.app_context():
-        #     #tao bang
         db.create_all()
-        # day len server
+        import hashlib
+
+        passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u1 = User(name="Tu09", username="123", password=passwordU1, avatar="./static/img/logo.png", active=True,
+                  user_role="USER")
+
+        passwordU2 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u2 = User(name="bacsy1", username="bacsy1", password=passwordU2, avatar="./static/img/logo.png", active=True,
+                  user_role="BACSY")
+
+        passwordU3 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u3 = User(name="yta1", username="yta1", password=passwordU3, avatar="./static/img/logo.png", active=True,
+                  user_role="YTA")
+
+        passwordU4 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u4 = User(name="nvtn1", username="nvtn1", password=passwordU4, avatar="./static/img/logo.png", active=True,
+                  user_role="NVTN")  # nhân viên thu ngân
+
+        db.session.add_all([u1, u2, u3, u4])
         db.session.commit()

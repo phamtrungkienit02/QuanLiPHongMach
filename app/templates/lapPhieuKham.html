@@ -1,0 +1,94 @@
+{%extends "layout/base.html"%}
+
+{%block title%}Dang Ky Kham benh truc tuyen{%endblock%}
+{%block header%}
+{%include 'layout/header.html'%}
+{%endblock%}
+
+{% block content%}
+<h1 style="text-align:center">Lap Phieu Kham</h1>
+<div class="container boxFormDangKyKham">
+    <h1 class="txtTitleBoxFormDangKyKham">LẬP PHIẾU KHÁM</h1>
+    <form method="get" action="{{url_for('dangKyKham')}}">
+        <div class="form-group">
+            <label for="maBenhNhan">Mã bênh nhân</label>
+            <input class="form-control" id="maBenhNhan" name="maBenhNhan">
+
+        </div>
+          <div class="form-group">
+            <label for="namSinh">Năm sinh:</label>
+            <input type="date" class="form-control" placeholder="Nhập năm sinh..." name="namSinh" id="namSinh">
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="diaChi">Thông tin địa chỉ:</label>
+            <input type="text" class="form-control" placeholder=" Biến địa chỉ" name="diaChi" required id="diaChi">
+        </div>
+
+        <br>
+        <br>
+
+        <div class="form-group">
+            <label for="trieuChung">Triệu chứng</label>
+            <textarea class="form-control" id="trieuChung" rows="3"></textarea>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="duDoanBenhLy">Dự đoán bênh lý</label>
+            <textarea class="form-control" id="duDoanBenhLy" name="duDoanBenhLy" rows="3"></textarea>
+
+        </div>
+
+
+        <br>
+
+        <div class="form-group">
+            <label for="maThuoc">Mã thuốc</label>
+            <select class="form-control" id="maThuoc">
+                <option>APX</option>
+                <option>ESTRA-98PT</option>
+                <option>COVID-Test</option>
+                <option>XINOFAM</option>
+                <option>ZENECA</option>
+            </select>
+
+            <label for="donVi">Đơn vị</label>
+            <select class="form-control" id="donVi">
+                <option>Vỉ</option>
+                <option>Chai</option>
+                <option>Lọ</option>
+            </select>
+
+
+            <label for="soLuong">Số lượng</label>
+            <input type="number" class="form-control" value="1" name="soLuong" id="soLuong">
+
+            <label for="cachDung">Cách dùng</label>
+            <textarea class="form-control" id="cachDung" rows="3"></textarea>
+            <br>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox">Lưu nháp
+            </label>
+        </div>
+        <br>
+
+
+        <div class="btnSubmitFormDangKyKham form-group ">
+            <button type="button" class="btn btn-primary btn-lg btn-block form-control">Lập phiếu khám</button>
+        </div>
+
+    </form>
+</div>
+
+
+{%endblock%}
+
+
+{%block footer%}
+{%include 'layout/footer.html'%}
+
+{%endblock%}
+
+

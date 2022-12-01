@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Đăng ký khám bệnh",
+    "nameFunc": "dangKyKham",
+    "userUse": "user"
+  },
+  {
+    "id": 2,
+    "name": "Lập phiếu khám",
+    "nameFunc": "lapPhieuKham",
+    "userUse": "bacsy"
+  },
+  {
+    "id": 3,
+    "name": "Duyệt danh sách",
+    "nameFunc": "duyetDanhSach",
+    "userUse": "yta"
+  },
+  {
+    "id": 4,
+    "name": "Thanh toán",
+    "nameFunc": "thanhToan",
+    "userUse": "nvtn"
+  },
+  {
+    "id": 5,
+    "name": "Admin",
+    "nameFunc": "admin",
+    "userUse": "admin"
+  }
+]
