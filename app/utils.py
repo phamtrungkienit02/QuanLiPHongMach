@@ -5,7 +5,6 @@ from app import app, db
 from app import models
 from app.models import *
 import hashlib
-import data
 from flask_login import current_user
 
 
@@ -80,13 +79,25 @@ def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
-def listKham_stats(listKham):
+def add_patient(patient_id,hoTen,gioiTinh, namSinh, diaChi, sdt, ngayKham, avatar):
+    p1 = Patient(id = patient_id, hoTen = hoTen, sex = gioiTinh, birthday = namSinh, address = diaChi, phone = sdt, avatar =avatar, dateKham = ngayKham)
+    db.session.add(p1)
+    db.session.commit()
+
+def load_patient(ngayKham = None):
+    patient = Patient.query.all()
+    if ngayKham:
+        patient = Patient.query.filter(QueueToAdd.ngayKham.__eq__(ngayKham) )
+
+
+    return patient
+
+
+def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind = None):
     total_amount = 0
 
-    if listKham:
-        for c in listKham.values():
-            total_amount += 1
+    if listKhamTheoNgay:
+            for b in listKhamTheoNgay.values():
+                total_amount += 1
 
-    return {
-        'total_amount': total_amount
-    }
+    return  {'total_amount': total_amount}

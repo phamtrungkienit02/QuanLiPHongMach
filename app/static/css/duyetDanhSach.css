@@ -29,11 +29,23 @@ div.infoBenhNhan {
 
 
 .BoxDaDuyet {
-    display: flex;
     background: #fff;
     border: 3px double black
 }
 
 .BoxDaDuyet i {
     padding: 20px;
+}
+
+.BoxDaDuyetHeader {
+    background: lightblue ;
+}
+
+.BoxDaDuyetHeader p{
+    display: inline;
+}
+
+.listKhamItem {
+    background: lightgreen;
+    margin: 5px;
 }

@@ -6,12 +6,12 @@ import cloudinary
 
 app = Flask(__name__)
 
-app.secret_key = "djfkhshfu9ggt3yu28y72646yu8d6hyufhuift67tf9hyfyuhfuig7dgug"
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/TestOnTapdb?charset=utf8mb4" % quote('Admin@123')
+app.secret_key = "djfkhshfu9ggt3yu28y72646y@123D"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/quanliphongmachdb?charset=utf8mb4" % quote('Admin@123')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
-app.config['lIST_KHAM_KEY']  = 'listKham'
-
+app.config['LIST_KHAM_KEY'] = 'listKham'
+app.config['LIST_KHAM_THEO_NGAY'] = 'listKhamTheoNgay'
 db = SQLAlchemy(app = app)
 
 login = LoginManager(app = app)

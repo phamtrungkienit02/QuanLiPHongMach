@@ -1,26 +1,26 @@
-function addToListKham(hoTen,namSinh ,diaChi, gioiTinh, ngayKham,  avatar, sdt) {
-    event.preventDefault()
+function addToListKham(id, hoTen, gioiTinh, namSinh, diaChi, sdt,ngayKham, avatar) {
 
     fetch('/api/listKham', {
-        method: "post",
+
+        method: 'post',
         body: JSON.stringify({
-           "hoTen": hoTen,
-            "diaChi": diaChi,
+            "id": id,
+            "hoTen": hoTen,
             "gioiTinh": gioiTinh,
             "namSinh": namSinh,
+            "diaChi": diaChi,
             "sdt": sdt,
             "ngayKham": ngayKham,
-            "avatar": avatar,
+            "avatar": avatar
         }),
         headers: {
             "Content-Type": "application/json"
         }
-    }).then(res => res.json()).then(data => {
-        console.info(data)
+    }).then(res => res.json()).then((data) => {
+
+        console.log(data)
         let d = document.getElementsByClassName("totalBox")
-        d.innerText = data.total_amount
-    }) // promise
-    .catch((err) => {
-        console.error(err)
-    })
-}
+        for (let i = 0; i < d.length; i++)
+            d[i].innerText = data.total_amount + "/40"
+    }).catch(err => console.error())
+ }

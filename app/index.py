@@ -8,11 +8,6 @@ from flask_login import login_user, logout_user
 from app.decorator import annonynous_user
 import cloudinary.uploader
 import json
-@app.context_processor # giúp render tất cả các trang
-def common_response():
-    return {
-        'menu' : utils.load_menu()
-    }
 
 @app.route('/')
 def index():
@@ -20,35 +15,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/cart', methods=['post'])
-def add_to_cart():
-    data = request.json
-    # data nhận kiểu từ điển tương tự với json
-
-    key = app.config['CART_KEY']
-    cart = session[key] if key in session else {}
-
-    id = str(data['id'])
-    name = data['name']
-    price = data['price']
-
-    if id in cart:
-        cart[id]['quantity'] += 1
-
-    else:
-        cart[id] = {
-            "id": id,
-            "name": name,
-            "price": price,
-            "quantity": 1
-        }
-
-    session[key] = cart
-    return jsonify(utils.cart_stats(cart))
-
 
 @app.route('/dangKyKham', methods=['get', 'post'])
-def dangKyKham():
+def dangKyKham(baseModel):
     menu = utils.load_menu()
     err_msg = ''
     diaChi = ''
@@ -80,40 +49,25 @@ def dangKyKham():
         except Exception as ex:
             err_msg = "He thong dang co loi !!!" + str(ex)
 
-    return render_template('dangKyKham.html', menu=menu, err_msg=err_msg)
+    return render_template('dangKyKham.html', err_msg=err_msg)
 
 
 @app.route('/lapPhieuKham')
 def lapPhieuKham():
     menu = utils.load_menu()
 
-    return render_template('lapPhieuKham.html', menu=menu)
+    return render_template('lapPhieuKham.html')
 
-@app.route('/bacsy')
-def bacsy():
-    menu = utils.load_menu()
-    return render_template('bacsy.html', menu=menu)
-
-
-@app.route('/yta')
-def yta():
-    menu = utils.load_menu()
-    return render_template('yta.html', menu=menu)
-
-
-@app.route('/nvtn')
-def nvtn():
-    menu = utils.load_menu()
-    return render_template('nvtn.html', menu=menu)
 
 
 @app.route('/duyetDanhSach')
 def duyetDanhSach():
     menu = utils.load_menu()
     ngayKhamFind  = request.args.get('ngayKhamFind')
+    ngayKhamFind1 = request.args.get('ngayKhamFind1') or ngayKhamFind # lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
     QueueToAdd = utils.load_QueueToAdd(ngayKham=ngayKhamFind)
-
-    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd,menu=menu, stats = utils.listKham_stats(session.get('listKham')))
+    Patient = utils.load_QueueToAdd(ngayKham=ngayKhamFind1)
+    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient =Patient, ngayKhamFind = ngayKhamFind)
 
 
 @app.route('/thanhToan')
@@ -173,32 +127,55 @@ def admin():
 
 @app.route('/api/listKham', methods = ['post'])
 def add_to_listKham():
-    data= request.json
 
-    key = app.config['LIST_KHAM_KEY']
+        data= request.json
 
-    listKham = session[key] if key in session else {}
+        key = app.config['LIST_KHAM_KEY']
+        listKham = session.get(key)
+        keyByDay = app.config['LIST_KHAM_THEO_NGAY']
+        listKhamTheoNgay = session.get(keyByDay)
 
-    id = str(data[id])
-    hoTen = str(data['hoTen'])
-    diaChi = data['diaChi']
-    namSinh = data['namSinh']
-    gioiTinh = data['gioiTinh']
-    sdt = data['sdt']
-    ngayKham = data['ngayKham']
-    avatar = data['avatar']
-    listKham[id] = {
-        "hoTen": hoTen,
-        "diaChi": diaChi,
-        "gioiTinh": gioiTinh,
-        "namSinh": namSinh,
-        "sdt": sdt,
-        "ngayKham": ngayKham,
-        "avatar": avatar,
+
+        id = str(data['id'])
+        hoTen = str(data['hoTen'])
+        diaChi = str(data['diaChi'])
+        namSinh = str(data['namSinh'])
+        gioiTinh = str(data['gioiTinh'])
+        sdt = str(data['sdt'])
+        ngayKham = str(data['ngayKham'])
+        avatar = str(data['avatar'])
+
+        listKhamTheoNgay = session[keyByDay] if keyByDay in session else {}
+        listKham = session[key] if key in session else {}
+
+
+        listKhamTheoNgay[ngayKham] = {
+            "id": id,
+            "hoTen": hoTen,
+            "diaChi": diaChi,
+            "gioiTinh": gioiTinh,
+            "namSinh": namSinh,
+            "sdt": sdt,
+            "ngayKham": ngayKham,
+            "avatar": avatar
+        }
+
+
+
+        session['listKhamTheoNgay'] = listKhamTheoNgay
+
+        return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
+
+
+
+@app.context_processor
+def common_attribute():
+    menu = utils.load_menu()
+    return {
+        'menu': menu,
+        'listKhamTheoNgay': utils.listKhamTheoNgay_stats(session.get(app.config['LIST_KHAM_THEO_NGAY']))
+
     }
-    session[key] = listKham
-
-    return jsonify(utils.listKham_stats(listKham))
 
 
 if __name__ == '__main__':

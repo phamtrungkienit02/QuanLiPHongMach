@@ -57,7 +57,10 @@ h1.txtTitleBoxFormDangKyKham {
     text-align: center;
     color: #0d6efd;
 }
-
+/*duyetDanhSach*/
+.d-flex {
+    display:flex;
+}
 
 /*lapPhieuKham*/
 

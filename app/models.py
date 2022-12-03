@@ -15,14 +15,12 @@ class UserRole(UserEnum):
 
 class BaseModel(db.Model):
     __abstract__ = True
-
     id = Column(Integer, primary_key=True, autoincrement=True)
-
 
 class QueueToAdd(BaseModel):
     __tablename__ = "QueueToAdd"
 
-    hoTen = Column(String(50), nullable=False, unique =True)
+    hoTen = Column(String(50), nullable=False, default="Anonymous")
     gioiTinh = Column(String(50), nullable=False, default="nam")
     namSinh = Column(DateTime, nullable=False)
     sdt = Column(String(11) )
@@ -41,52 +39,96 @@ class User(BaseModel, UserMixin):
                     default="https://vcdn1-giaitri.vnecdn.net/2020/08/18/gdragonava1-1597716430-7452-1597716741.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=dyDAM635cysU8i5PT64U9g")
     active = Column(Boolean, default=True)
     user_role = Column(String(50), default="USER", nullable=False)
-
     # receipts = relationship('Receipt', backref='user', lazy=True)
 
     def __str__(self):
         return self.name
 
-    # kiên
 
-
+# kiên
 class Sex(UserEnum):
     MALE = 1
     FEMALE = 2
 
-
-
-
 class Patient(BaseModel):
-    username = Column(String(50), nullable=False, unique=True)
+    name = Column(String(50), nullable=False, unique=True)
     birthday = Column(DateTime, nullable=False)
     sex = Column(String(50), nullable=False)
     address = Column(String(50), nullable=False)
     phone = Column(String(11))
     note = Column(String(50))
     avatar = Column(String(200), nullable= False, default = "avatar")
-
+    dateKham = Column(DateTime, nullable= False)
     # receipts = relationship('Receipt', backref='patient', lazy=True)
+    prescriptions = relationship('Prescription', backref='patient', lazy=False)
+    Anamnesis_details = relationship('AnamnesisDetail', backref='patient', lazy=True)
+    def __str__(self):
+        return self.name
 
-
-class Anamnesis(BaseModel):
-    anamesis = Column(String(50))
-    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
-
-
-class PhieuKham(BaseModel):
+class MedicalReport(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
     stt = Column(Integer, autoincrement=True)
     trieu_chung = Column(String(50), nullable=False)
     chuan_doan = Column(String(50), nullable=False)
-    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
-    #
+    patients = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    prescriptions = relationship('Prescription', backref='medicalReport', lazy=False)
+    def __str__(self):
+        return self.name
 
-
-class ToaThuoc(BaseModel):
+class Prescription(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
-    # khoaNgoaiPK
-    patient_id = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    patients = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    medical_reports = Column(Integer, ForeignKey(MedicalReport.id), nullable=False)
+    prescription_details = relationship('PrescriptionDetail', backref='prescription', lazy=True)
+
+
+class DrugPriceBill(BaseModel):
+    create_date = Column(DateTime, nullable=False)
+    drug_price = Column(Float, default=0)
+    medical_costs = Column(Float, default=50000)
+    patients = Column(Integer, ForeignKey(Patient.id), nullable=False)
+    prescription_details = relationship('PrescriptionDetail', backref='drugPriceBill', lazy=False)
+    def __str__(self):
+        return self.name
+class Anamnesis(BaseModel):
+    anamesis = Column(String(50))
+    Anamnesis_details = relationship('AnamnesisDetail', backref='anamesis', lazy=True)
+
+class AnamnesisDetail(db.Model):
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
+    use_drug = Column(String(50))
+    patients = Column(Integer, ForeignKey(Patient.id), nullable=False, primary_key=True)
+    anamnesis = Column(Integer, ForeignKey(Anamnesis.id), nullable=False, primary_key=True)
+
+class Category(BaseModel):
+    __tablename__ = "category"
+    name = Column(String(50), nullable=False)
+    drugs = relationship('Drug', backref='category', lazy=False)
+
+    def __str__(self):
+        return self.name
+
+class Drug(BaseModel):
+    __tablename__ = 'drug'
+    name = Column(String(50), nullable=False)
+    price = Column(Float, default=0)
+    unit = Column(String(20), nullable=False)
+    create_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
+    description = Column(String(100))
+    category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
+    prescription_details = relationship('PrescriptionDetail', backref='drug', lazy=True)
+    def __str__(self):
+        return self.name
+
+class PrescriptionDetail(db.Model):
+    number = Column(Integer, nullable=False)
+    description = Column(String(100))
+    prescriptions = Column(Integer, ForeignKey(Prescription.id), nullable=False, primary_key=True)
+    drugs = Column(Integer, ForeignKey(Drug.id), nullable=False, primary_key=True)
+    drug_price_bills = Column(Integer, ForeignKey(DrugPriceBill.id), nullable=False)
+
 
     # class ReceiptDetail(db.Model):
     # receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False, primary_key=True)
@@ -100,37 +142,6 @@ class ToaThuoc(BaseModel):
     # created_date = Column(DateTime, default=datetime.now())
     #     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
     #     details = relationship('ReceiptDetail', backref='receipt', lazy=True)
-
-    # class ChiTietToaThuoc
-
-
-class Category(BaseModel):
-    __tablename__ = "category"
-    name = Column(String(50), nullable=False)
-    drugs = relationship('Drug', backref='category', lazy=False)
-
-    def __str__(self):
-        return self.name
-
-
-class DrugPriceBill(BaseModel):
-    create_date = Column(DateTime, nullable=False)
-    drug_price = Column(Float, default=0)
-    medical_costs = Column(Float, )
-    # MaToa
-
-
-class Drug(BaseModel):
-    __tablename__ = 'drug'
-    name = Column(String(50), nullable=False)
-    price = Column(Float, default=0)
-    unit = Column(String(20), nullable=False)
-    create_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
-    category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
-
-    def __str__(self):
-        return self.name
 
 
 if __name__ == "__main__":
@@ -156,3 +167,4 @@ if __name__ == "__main__":
 
         db.session.add_all([u1, u2, u3, u4])
         db.session.commit()
+
