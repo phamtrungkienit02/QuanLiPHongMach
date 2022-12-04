@@ -24,3 +24,16 @@ function addToListKham(id, hoTen, gioiTinh, namSinh, diaChi, sdt,ngayKham, avata
             d[i].innerText = data.total_amount + "/40"
     }).catch(err => console.error())
  }
+
+ function saveList() {
+    if (confirm("Bạn chắc chắn lưu dánh sách không?")) {
+            fetch("/api/saveList").then(res => res.json()).then(data => {
+
+                alert(data.status)
+                if (data.status === 200)
+                {
+                    alert('hell')
+                }
+                    location.reload()
+            })
+        } }

@@ -79,10 +79,21 @@ def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
-def add_patient(patient_id,hoTen,gioiTinh, namSinh, diaChi, sdt, ngayKham, avatar):
-    p1 = Patient(id = patient_id, hoTen = hoTen, sex = gioiTinh, birthday = namSinh, address = diaChi, phone = sdt, avatar =avatar, dateKham = ngayKham)
-    db.session.add(p1)
-    db.session.commit()
+def add_patient(listKhamTheoNgay):
+    if listKhamTheoNgay:
+
+        for c in listKhamTheoNgay.values():
+            d = Patient(name=c['hoTen'],
+                        id=c['id'],
+                        sex=c['gioiTinh'],
+                        birthday = c['namSinh'],
+                        address = c['diaChi'],
+                        dateKham = datetime(c['ngayKham']),
+                        avatar = c['avatar'],
+                        phone = c['sdt'])
+            db.session.add(d)
+
+        db.session.commit()
 
 def load_patient(ngayKham = None):
     patient = Patient.query.all()
@@ -91,7 +102,6 @@ def load_patient(ngayKham = None):
 
 
     return patient
-
 
 def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind = None):
     total_amount = 0

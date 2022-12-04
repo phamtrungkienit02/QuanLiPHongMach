@@ -51,6 +51,31 @@ def dangKyKham(baseModel):
 
     return render_template('dangKyKham.html', err_msg=err_msg)
 
+# @app.route('/api/Add_patient', methods = ['post'])
+# def Add_patient():
+#     data = request.json
+#     id = str(data['id'])
+#     hoTen = str(data['hoTen'])
+#     diaChi = str(data['diaChi'])
+#     namSinh = datetime(data['namSinh'])
+#     gioiTinh = str(data['gioiTinh'])
+#     sdt = str(data['sdt'])
+#     ngayKham = datetime(data['ngayKham'])
+#     avatar = str(data['avatar'])
+#     utils.add_patient(id, hoTen, gioiTinh,namSinh, diaChi, sdt, ngayKham, avatar)
+
+@app.route('/api/saveList')
+def save_list():
+    key = app.config['LIST_KHAM_THEO_NGAY']
+    listKhamTheoNgay = session.get(key)
+
+    try:
+        utils.add_patient(listKhamTheoNgay = listKhamTheoNgay)
+    except:
+        return jsonify({'status': 500})
+    else:
+        del session[key]
+        return jsonify({'status': 200})
 
 @app.route('/lapPhieuKham')
 def lapPhieuKham():
@@ -64,10 +89,10 @@ def lapPhieuKham():
 def duyetDanhSach():
     menu = utils.load_menu()
     ngayKhamFind  = request.args.get('ngayKhamFind')
-    ngayKhamFind1 = request.args.get('ngayKhamFind1') or ngayKhamFind # lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
+    ngayKhamFind1 = request.args.get('ngayKhamFind1') # lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
     QueueToAdd = utils.load_QueueToAdd(ngayKham=ngayKhamFind)
-    Patient = utils.load_QueueToAdd(ngayKham=ngayKhamFind1)
-    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient =Patient, ngayKhamFind = ngayKhamFind)
+    Patient = utils.load_patient(ngayKham=ngayKhamFind1)
+    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient = Patient, ngayKhamFind = ngayKhamFind, ngayKhamFind1 = ngayKhamFind1)
 
 
 @app.route('/thanhToan')
@@ -111,6 +136,9 @@ def login_my_user():
 @app.route('/dangXuat')
 def logout_my_user():
     logout_user()
+    key = app.config['LIST_KHAM_THEO_NGAY']
+    if key in session:
+        del session[key]
     return redirect('/dangNhap')
 
 
@@ -137,19 +165,19 @@ def add_to_listKham():
 
 
         id = str(data['id'])
-        hoTen = str(data['hoTen'])
-        diaChi = str(data['diaChi'])
-        namSinh = str(data['namSinh'])
-        gioiTinh = str(data['gioiTinh'])
-        sdt = str(data['sdt'])
-        ngayKham = str(data['ngayKham'])
-        avatar = str(data['avatar'])
+        hoTen = data['hoTen']
+        diaChi = data['diaChi']
+        namSinh = datetime.datetime.strptime(data['namSinh'],"%Y/%m/%d %H:%M:%S")
+        gioiTinh = data['gioiTinh']
+        sdt = data['sdt']
+        ngayKham = datetime.strptime(data['ngayKham'],"%Y/%m/%d %H:%M:%S")
+        avatar = data['avatar']
 
         listKhamTheoNgay = session[keyByDay] if keyByDay in session else {}
         listKham = session[key] if key in session else {}
 
 
-        listKhamTheoNgay[ngayKham] = {
+        listKhamTheoNgay[id] = {
             "id": id,
             "hoTen": hoTen,
             "diaChi": diaChi,
