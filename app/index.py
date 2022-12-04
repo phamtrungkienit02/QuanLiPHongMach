@@ -3,6 +3,7 @@ import math
 import cloudinary.uploader
 from flask import render_template, request, redirect, session, jsonify, url_for
 from app import app, login, utils, models
+from datetime import datetime
 from app.models import *
 from flask_login import login_user, logout_user
 from app.decorator import annonynous_user
@@ -64,13 +65,13 @@ def dangKyKham(baseModel):
 #     avatar = str(data['avatar'])
 #     utils.add_patient(id, hoTen, gioiTinh,namSinh, diaChi, sdt, ngayKham, avatar)
 
-@app.route('/api/saveList')
+@app.route('/api/saveList', methods=['get', 'post'])
 def save_list():
     key = app.config['LIST_KHAM_THEO_NGAY']
     listKhamTheoNgay = session.get(key)
 
     try:
-        utils.add_patient(listKhamTheoNgay = listKhamTheoNgay)
+        utils.add_patientV2(listKhamTheoNgay = listKhamTheoNgay)
     except:
         return jsonify({'status': 500})
     else:
@@ -85,14 +86,31 @@ def lapPhieuKham():
 
 
 
-@app.route('/duyetDanhSach')
+@app.route('/duyetDanhSach', methods=['post', 'get'])
 def duyetDanhSach():
     menu = utils.load_menu()
-    ngayKhamFind  = request.args.get('ngayKhamFind')
-    ngayKhamFind1 = request.args.get('ngayKhamFind1') # lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
+    ngayKhamFind = request.args.get('ngayKhamFind')
+    ngayKhamFind1 = request.args.get('ngayKhamFind1') or ngayKhamFind# lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
     QueueToAdd = utils.load_QueueToAdd(ngayKham=ngayKhamFind)
     Patient = utils.load_patient(ngayKham=ngayKhamFind1)
-    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient = Patient, ngayKhamFind = ngayKhamFind, ngayKhamFind1 = ngayKhamFind1)
+    parse_ngayKhamFind = datetime.strptime('1111-1-1','%Y-%m-%d')
+    parse_ngayKhamFind1 = datetime.strptime('1111-1-1','%Y-%m-%d')
+    count_patients = utils.count_patient()
+    if ngayKhamFind:
+        parse_ngayKhamFind = datetime.strptime(str(ngayKhamFind), '%Y-%m-%d')
+    if ngayKhamFind1:
+        parse_ngayKhamFind1 = datetime.strptime(str(ngayKhamFind1),'%Y-%m-%d')
+
+        # key = app.config['LIST_KHAM_THEO_NGAY']
+        # if key in session:
+        #     del session[key]
+
+
+    return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient = Patient,
+                           ngayKhamFind = parse_ngayKhamFind ,
+                           ngayKhamFind1 =parse_ngayKhamFind1,
+                            count_patients = count_patients
+                           )
 
 
 @app.route('/thanhToan')
@@ -167,10 +185,10 @@ def add_to_listKham():
         id = str(data['id'])
         hoTen = data['hoTen']
         diaChi = data['diaChi']
-        namSinh = datetime.datetime.strptime(data['namSinh'],"%Y/%m/%d %H:%M:%S")
+        namSinh = data['namSinh']
         gioiTinh = data['gioiTinh']
         sdt = data['sdt']
-        ngayKham = datetime.strptime(data['ngayKham'],"%Y/%m/%d %H:%M:%S")
+        ngayKham = data['ngayKham']
         avatar = data['avatar']
 
         listKhamTheoNgay = session[keyByDay] if keyByDay in session else {}
