@@ -19,11 +19,14 @@ class BaseModel(db.Model):
 
 class QueueToAdd(BaseModel):
     __tablename__ = "QueueToAdd"
+
     hoTen = Column(String(50), nullable=False, default="Anonymous")
     gioiTinh = Column(String(50), nullable=False, default="nam")
-    namSinh = Column(DateTime, nullable=False, default='0/0/2002')
-    diaChi = Column(String(100))
-
+    namSinh = Column(DateTime, nullable=False)
+    sdt = Column(String(11) )
+    diaChi = Column(String(50))
+    ngayKham = Column(DateTime, nullable=False, default= datetime.now())
+    avatar = Column(String(200), nullable= False, default = "avatar")
     def __str__(self):
         return self.hoTen
 
@@ -50,10 +53,13 @@ class Sex(UserEnum):
 class Patient(BaseModel):
     name = Column(String(50), nullable=False, unique=True)
     birthday = Column(DateTime, nullable=False)
-    sex = Column(Enum(Sex), nullable=False)
+    sex = Column(String(50), nullable=False)
     address = Column(String(50), nullable=False)
     phone = Column(String(11))
     note = Column(String(50))
+    avatar = Column(String(200), nullable= False, default = "avatar")
+    dateKham = Column(DateTime, nullable= False)
+    # receipts = relationship('Receipt', backref='patient', lazy=True)
     prescriptions = relationship('Prescription', backref='patient', lazy=False)
     Anamnesis_details = relationship('AnamnesisDetail', backref='patient', lazy=True)
     def __str__(self):
@@ -141,24 +147,24 @@ class PrescriptionDetail(db.Model):
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        # import hashlib
-        #
-        # passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        # u1 = User(name="Tu09", username="123", password=passwordU1, avatar="./static/img/logo.png", active=True,
-        #           user_role="USER")
-        #
-        # passwordU2 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        # u2 = User(name="bacsy1", username="bacsy1", password=passwordU2, avatar="./static/img/logo.png", active=True,
-        #           user_role="BACSY")
-        #
-        # passwordU3 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        # u3 = User(name="yta1", username="yta1", password=passwordU3, avatar="./static/img/logo.png", active=True,
-        #           user_role="YTA")
-        #
-        # passwordU4 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        # u4 = User(name="nvtn1", username="nvtn1", password=passwordU4, avatar="./static/img/logo.png", active=True,
-        #           user_role="NVTN")  # nhân viên thu ngân
-        #
-        # db.session.add_all([u1, u2, u3, u4])
+        import hashlib
+
+        passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u1 = User(name="Tu09", username="123", password=passwordU1, avatar="./static/img/logo.png", active=True,
+                  user_role="USER")
+
+        passwordU2 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u2 = User(name="bacsy1", username="bacsy1", password=passwordU2, avatar="./static/img/logo.png", active=True,
+                  user_role="BACSY")
+
+        passwordU3 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u3 = User(name="yta1", username="yta1", password=passwordU3, avatar="./static/img/logo.png", active=True,
+                  user_role="YTA")
+
+        passwordU4 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        u4 = User(name="nvtn1", username="nvtn1", password=passwordU4, avatar="./static/img/logo.png", active=True,
+                  user_role="NVTN")  # nhân viên thu ngân
+
+        db.session.add_all([u1, u2, u3, u4])
         db.session.commit()
 

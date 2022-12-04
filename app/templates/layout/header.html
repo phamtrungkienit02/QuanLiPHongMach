@@ -28,6 +28,12 @@
 
                 {% if current_user.is_authenticated %}
                 {% for item in menu %}
+                   {%  if item.nameFunc == 'dangKyKham' and (current_user.user_role == "USER" or current_user.is_anonymous )%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                        </li>
+                    {% endif %}
+
                 {%  if item.nameFunc == 'lapPhieuKham' and current_user.user_role == "BACSY"  %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
@@ -63,14 +69,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-success" href="/dangNhap">Đăng nhập</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="/dangKy">Đăng ký</a>
-                </li>
+
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link text-secondary" href="/cart">&#129722; Giỏ háng <span
-                            class="badge bg-danger cart-counter">1</span></a>
-                </li>
+
 
             </ul>
         </div>

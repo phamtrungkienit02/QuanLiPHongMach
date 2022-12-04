@@ -1,15 +1,97 @@
 {%extends "layout/base.html"%}
 
-{%block title%}Dang Ky Kham benh truc tuyen{%endblock%}
+{%block title%}duyetDanhSach{%endblock%}
 {%block header%}
 {%include 'layout/header.html'%}
 {%endblock%}
 {%block css%}
-<link rel="stylesheet" href="{{url_for('static', filename = 'css/dangNhap.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/duyetDanhSach.css')}}">
 {%endblock%}
 
 {% block content%}
-  <h1>duyetDanhSach</h1>
+<h1>duyetDanhSach</h1>
+
+
+<div class="BoxDuyet row">
+
+    <div class="BoxChuaDuyet col-6">
+        <form method='get'>
+            <label for="ngayKhamFind">Tìm kiếm đơn chờ duyệt đăng ký khám theo ngày</label>
+            <input type="date" name="ngayKhamFind" id="ngayKhamFind">
+            <button type="submit" class="btn btn-primary">Tìm</button>
+        </form>
+        {% for bn in QueueToAdd %}
+        <div class="item col-11">
+            <div class="imgBenhNhan">
+                <img src="{{bn.avatar}}" alt="anhBenhNhan">
+            </div>
+            <div class="infoBenhNhan">
+                <p>MaBN: {{bn.id}}</p>
+                <p>HoTen: {{bn.hoTen}}</p>
+                <p>sdt: {{bn.sdt}}</p>
+                <p>NgayKham: {{bn.ngayKham}}</p>
+            </div>
+
+            <div class="BoxThemSuaXoa">
+                <a href="javascript:;" onclick="addToListKham(
+                       '{{bn.id}}',
+                    '{{bn.hoTen}}',
+                    '{{bn.gioiTinh}}',
+                    '{{bn.namSinh}}',
+                    '{{bn.diaChi}}',
+                    '{{bn.sdt}}',
+                    '{{bn.ngayKham}}',
+                    '{{bn.avatar}}',
+                    )" class="btn btn-danger">Duyệt</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="BoxDaDuyet col-6">
+        <form method='get'>
+            <label for="ngayKhamFind1">danh sách khám theo ngày</label>
+            <input type="date" name="ngayKhamFind1" id="ngayKhamFind1">
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </form>
+        <div class="BoxDaDuyetHeader col-12 text-center ">
+            <p class="nav-link text-secondary" href="/cart">&#128722; Danh sách khám
+                ngày: {{ngayKhamFind1}} </p>
+
+            <p href="">Số lượng:<span class="badge bg-danger totalBox">{{ listKhamTheoNgay.total_amount}}/40</span></p>
+        </div>
+        <button class="btn btn-danger" onclick="saveList()" class="btn btn-danger" type="submit">
+
+            Lưu danh sánh
+        </button>
+
+        <div class="d-flex listKham">
+            {% if session.get("listKhamTheoNgay")%}
+
+            {%for i in session.get("listKhamTheoNgay").values() %}
+<!--            {%if (i.ngayKham) == (ngayKhamFind1)%}-->
+            <div class="listKhamItem">
+                <div class="listKhamItemImg">
+
+                    <img src="{{i.avatar}}" alt="imgPatient">
+                </div>
+                <div class="listKhamItemInfo">
+                    <span>STT: {{i.id}}</span>
+                    <span>họ tên: {{i['hoTen']}} </span>
+                    <span>ngày khám: {{i['ngayKham']}} </span>
+                </div>
+            </div>
+<!--            {%endif%}-->
+            {%endfor%}
+            {%endif%}
+        </div>
+
+
+    </div>
+</div>
+
+
 {%endblock%}
 
 
