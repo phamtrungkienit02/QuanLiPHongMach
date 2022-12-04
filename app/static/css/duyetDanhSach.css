@@ -1,6 +1,8 @@
 
 
 .BoxDuyet {
+    margin-bottom: 50px;
+
 }
 
 div.imgBenhNhan {
@@ -14,6 +16,8 @@ div.imgBenhNhan > img {
 
 .BoxChuaDuyet {
     background: lightgreen;
+    overflow-y: scroll;
+    height: 700px;
 }
 
 
@@ -25,8 +29,12 @@ div.imgBenhNhan > img {
 
 div.infoBenhNhan {
     display:flex;
-}
+    flex-wrap: wrap;
 
+}
+div.infoBenhNhan p {
+    margin:14px;
+}
 
 .BoxDaDuyet {
     background: #fff;

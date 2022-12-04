@@ -53,6 +53,12 @@
                         </li>
                     {% endif %}
 
+                 {%  if item.nameFunc == 'admin' and current_user.user_role == "ADMIN" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                        </li>
+                    {% endif %}
+
 
                 {% endfor %}
                 <li class="nav-item">

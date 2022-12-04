@@ -15,12 +15,14 @@
 <div class="BoxDuyet row">
 
     <div class="BoxChuaDuyet col-6">
-        <form method='get'>
+        <form>
             <label for="ngayKhamFind">Tìm kiếm đơn chờ duyệt đăng ký khám theo ngày</label>
             <input type="date" name="ngayKhamFind" id="ngayKhamFind">
             <button type="submit" class="btn btn-primary">Tìm</button>
         </form>
+        <h3>Ngày:{{ngayKhamFind}}</h3>
         {% for bn in QueueToAdd %}
+
         <div class="item col-11">
             <div class="imgBenhNhan">
                 <img src="{{bn.avatar}}" alt="anhBenhNhan">
@@ -50,7 +52,7 @@
     </div>
 
     <div class="BoxDaDuyet col-6">
-        <form method='get'>
+        <form >
             <label for="ngayKhamFind1">danh sách khám theo ngày</label>
             <input type="date" name="ngayKhamFind1" id="ngayKhamFind1">
             <button type="submit" class="btn btn-primary">Xác nhận</button>
@@ -59,7 +61,7 @@
             <p class="nav-link text-secondary" href="/cart">&#128722; Danh sách khám
                 ngày: {{ngayKhamFind1}} </p>
 
-            <p href="">Số lượng:<span class="badge bg-danger totalBox">{{ listKhamTheoNgay.total_amount}}/40</span></p>
+            <p href="">Số lượng:<span class="badge bg-danger totalBox">{{ count_patients}}/40</span></p>
         </div>
         <button class="btn btn-danger" onclick="saveList()" class="btn btn-danger" type="submit">
 
@@ -68,21 +70,19 @@
 
         <div class="d-flex listKham">
             {% if session.get("listKhamTheoNgay")%}
-
-            {%for i in session.get("listKhamTheoNgay").values() %}
-<!--            {%if (i.ngayKham) == (ngayKhamFind1)%}-->
+            {%for i in Patient %}
+            {% if i.dateKham == ngayKhamFind1 %}
             <div class="listKhamItem">
                 <div class="listKhamItemImg">
-
                     <img src="{{i.avatar}}" alt="imgPatient">
                 </div>
                 <div class="listKhamItemInfo">
                     <span>STT: {{i.id}}</span>
-                    <span>họ tên: {{i['hoTen']}} </span>
-                    <span>ngày khám: {{i['ngayKham']}} </span>
+                    <span>họ tên: {{i['name']}} </span>
+                    <span>ngày khám: {{i['dateKham']}} </span>
                 </div>
             </div>
-<!--            {%endif%}-->
+            {%endif%}
             {%endfor%}
             {%endif%}
         </div>

@@ -1,5 +1,4 @@
 function addToListKham(id, hoTen, gioiTinh, namSinh, diaChi, sdt,ngayKham, avatar) {
-
     fetch('/api/listKham', {
 
         method: 'post',
@@ -32,7 +31,7 @@ function addToListKham(id, hoTen, gioiTinh, namSinh, diaChi, sdt,ngayKham, avata
                 alert(data.status)
                 if (data.status === 200)
                 {
-                    alert('hell')
+                    alert('thành công')
                 }
                     location.reload()
             })

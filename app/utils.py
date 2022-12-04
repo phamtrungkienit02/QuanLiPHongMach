@@ -6,6 +6,8 @@ from app import models
 from app.models import *
 import hashlib
 from flask_login import current_user
+from flask import render_template, request, redirect, session, jsonify, url_for
+from sqlalchemy import func
 
 
 def read_json(path):
@@ -34,7 +36,7 @@ def load_menu():
     return read_json(os.path.join(app.root_path, 'data/menu.json'))
 
 
-def them_benhnhan_cho_duyet(hoTen="Tom", namSinh=2 / 3 / 2022, diaChi="diaChiMacDinh", gioiTinh="gay",ngayKham = datetime.now(),sdt = None, avatar = "avatar"):
+def them_benhnhan_cho_duyet(hoTen, namSinh, diaChi, gioiTinh,ngayKham,sdt, avatar):
     p1 = QueueToAdd(hoTen=hoTen, namSinh=namSinh, diaChi=diaChi, sdt = sdt, gioiTinh=gioiTinh,ngayKham = ngayKham,avatar = avatar)
     db.session.add(p1)
     db.session.commit()
@@ -71,6 +73,11 @@ def check_kind_user_to_render_menu():
             for i in menu:
                 if i.userUse == 'user':
                     menuOfUser.append(i)
+        if current_user.user_role == UserRole.ADMIN:
+
+            for i in menu:
+                if i.userUse == 'admin':
+                    menuOfUser.append(i)
 
     return menuOfUser
 
@@ -86,23 +93,52 @@ def add_patient(listKhamTheoNgay):
             d = Patient(name=c['hoTen'],
                         id=c['id'],
                         sex=c['gioiTinh'],
-                        birthday = c['namSinh'],
+                        birthday = str(datetime.strptime(c['namSinh'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
                         address = c['diaChi'],
-                        dateKham = datetime(c['ngayKham']),
+                        dateKham = str(datetime.strptime(c['ngayKham'], '%Y-%m-%d')),
                         avatar = c['avatar'],
                         phone = c['sdt'])
             db.session.add(d)
 
         db.session.commit()
 
-def load_patient(ngayKham = None):
+def add_patientV2(listKhamTheoNgay):
+    if listKhamTheoNgay:
+
+        for c in listKhamTheoNgay.values():
+            d = Patient(
+                        id=c['id'],
+                        name=c['hoTen'],
+
+                        sex=c['gioiTinh'],
+                        birthday = str(datetime.strptime(c['namSinh'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
+                        address = c['diaChi'],
+                        dateKham = str(datetime.strptime(c['ngayKham'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
+                        avatar = c['avatar'],
+                        phone = c['sdt'])
+            db.session.add(d)
+
+        db.session.commit()
+
+def load_patient(ngayKham):
     patient = Patient.query.all()
     if ngayKham:
         patient = Patient.query.filter(QueueToAdd.ngayKham.__eq__(ngayKham) )
 
 
     return patient
+def load_session(ngayKham = None):
+    listKhamTheoNgay = session.get(app.config['LIST_KHAM_THEO_NGAY'])
+    listKham = []
+    if listKhamTheoNgay:
+        for i  in listKhamTheoNgay.values():
+            if i['ngayKham'] == ngayKham:
+                listKham.append(i)
+    return listKham
 
+def count_patient():
+    return db.session.query(Patient.id, func.count(Patient.id)) \
+      .all()
 def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind = None):
     total_amount = 0
 
