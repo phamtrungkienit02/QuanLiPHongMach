@@ -86,23 +86,14 @@ def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
+
+def check_id_in_patient(sdt):
+    for i in Patient:
+        if sdt.__eq__(i.phone):
+            return True
+    return False
 def add_patient(listKhamTheoNgay):
-    if listKhamTheoNgay:
-
-        for c in listKhamTheoNgay.values():
-            d = Patient(name=c['hoTen'],
-                        id=c['id'],
-                        sex=c['gioiTinh'],
-                        birthday = str(datetime.strptime(c['namSinh'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
-                        address = c['diaChi'],
-                        dateKham = str(datetime.strptime(c['ngayKham'], '%Y-%m-%d')),
-                        avatar = c['avatar'],
-                        phone = c['sdt'])
-            db.session.add(d)
-
-        db.session.commit()
-
-def add_patientV2(listKhamTheoNgay):
+    date_format = '%Y-%m-%d %H:%M:%D'
     if listKhamTheoNgay:
 
         for c in listKhamTheoNgay.values():
@@ -111,34 +102,33 @@ def add_patientV2(listKhamTheoNgay):
                         name=c['hoTen'],
 
                         sex=c['gioiTinh'],
-                        birthday = str(datetime.strptime(c['namSinh'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
+                        birthday =c['namSinh'],
                         address = c['diaChi'],
-                        dateKham = str(datetime.strptime(c['ngayKham'], '%Y-%m-%d')).strftime('%Y-%m-%d'),
+                        dateKham = c['ngayKham'],
                         avatar = c['avatar'],
                         phone = c['sdt'])
             db.session.add(d)
 
         db.session.commit()
 
-def load_patient(ngayKham):
+def load_patient(ngayKham =  None):
     patient = Patient.query.all()
     if ngayKham:
-        patient = Patient.query.filter(QueueToAdd.ngayKham.__eq__(ngayKham) )
+        patient = Patient.query.filter(Patient.dateKham.__eq__(ngayKham) )
 
 
     return patient
-def load_session(ngayKham = None):
+def load_session(ngayKhamFind = None):
     listKhamTheoNgay = session.get(app.config['LIST_KHAM_THEO_NGAY'])
     listKham = []
     if listKhamTheoNgay:
         for i  in listKhamTheoNgay.values():
-            if i['ngayKham'] == ngayKham:
+            ngayKham = datetime.strptime(i['ngayKham'], '%Y-%m-%d %H:%M:%S')
+            if ngayKham.year == ngayKhamFind.year  and ngayKham.month == ngayKhamFind.month and ngayKham.day == ngayKhamFind.day:
                 listKham.append(i)
     return listKham
 
-def count_patient():
-    return db.session.query(Patient.id, func.count(Patient.id)) \
-      .all()
+
 def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind = None):
     total_amount = 0
 

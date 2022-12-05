@@ -33,7 +33,8 @@
                 <p>sdt: {{bn.sdt}}</p>
                 <p>NgayKham: {{bn.ngayKham}}</p>
             </div>
-
+            {%for i in Patient%}
+            {%if i.id != bn.id%}
             <div class="BoxThemSuaXoa">
                 <a href="javascript:;" onclick="addToListKham(
                        '{{bn.id}}',
@@ -46,13 +47,31 @@
                     '{{bn.avatar}}',
                     )" class="btn btn-danger">Duyệt</a>
             </div>
+            {%endif%}
+            {% if i.id == bn.id%}
+             <div class="BoxThemSuaXoa">
+                <a href="javascript:;" onclick="addToListKham(
+                       '{{bn.id}}',
+                    '{{bn.hoTen}}',
+                    '{{bn.gioiTinh}}',
+                    '{{bn.namSinh}}',
+                    '{{bn.diaChi}}',
+                    '{{bn.sdt}}',
+                    '{{bn.ngayKham}}',
+                    '{{bn.avatar}}',
+                    )" class="btn btn-danger disabled">Đã duyệt</a>
+            </div>
+
+            {%endif%}
+
+            {%endfor%}
         </div>
         {% endfor %}
 
     </div>
 
     <div class="BoxDaDuyet col-6">
-        <form >
+        <form>
             <label for="ngayKhamFind1">danh sách khám theo ngày</label>
             <input type="date" name="ngayKhamFind1" id="ngayKhamFind1">
             <button type="submit" class="btn btn-primary">Xác nhận</button>
@@ -61,28 +80,49 @@
             <p class="nav-link text-secondary" href="/cart">&#128722; Danh sách khám
                 ngày: {{ngayKhamFind1}} </p>
 
-            <p href="">Số lượng:<span class="badge bg-danger totalBox">{{ count_patients}}/40</span></p>
+            <p href="">Số lượng:<span class="badge bg-danger totalBox">/40</span></p>
         </div>
         <button class="btn btn-danger" onclick="saveList()" class="btn btn-danger" type="submit">
 
             Lưu danh sánh
         </button>
+        <h2>{{ngayKhamFind1}}</h2>
 
         <div class="d-flex listKham">
             {% if session.get("listKhamTheoNgay")%}
             {%for i in Patient %}
-            {% if i.dateKham == ngayKhamFind1 %}
+
+
             <div class="listKhamItem">
                 <div class="listKhamItemImg">
                     <img src="{{i.avatar}}" alt="imgPatient">
                 </div>
+                <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
+
                 <div class="listKhamItemInfo">
                     <span>STT: {{i.id}}</span>
                     <span>họ tên: {{i['name']}} </span>
                     <span>ngày khám: {{i['dateKham']}} </span>
                 </div>
             </div>
-            {%endif%}
+            {%endfor%}
+
+
+            {%for i in listKham %}
+
+            <div class="listKhamItem">
+                <div class="listKhamItemImg">
+                    <img src="{{i.avatar}}" alt="imgPatient">
+                </div>
+                <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
+
+                <div class="listKhamItemInfo">
+                    <span>STT: {{i.id}}</span>
+                    <span>họ tên: {{i['hoTen']}} </span>
+                    <span>ngày khám: {{i['ngayKham']}} </span>
+                </div>
+            </div>
+
             {%endfor%}
             {%endif%}
         </div>
