@@ -3,7 +3,8 @@ import math
 import cloudinary.uploader
 from flask import render_template, request, redirect, session, jsonify, url_for
 from app import app, login, utils, models
-from datetime import datetime
+from datetime import date, datetime
+
 from app.models import *
 from flask_login import login_user, logout_user
 from app.decorator import annonynous_user
@@ -71,7 +72,7 @@ def save_list():
     listKhamTheoNgay = session.get(key)
 
     try:
-        utils.add_patientV2(listKhamTheoNgay = listKhamTheoNgay)
+        utils.add_patient(listKhamTheoNgay = listKhamTheoNgay)
     except:
         return jsonify({'status': 500})
     else:
@@ -92,24 +93,34 @@ def duyetDanhSach():
     ngayKhamFind = request.args.get('ngayKhamFind')
     ngayKhamFind1 = request.args.get('ngayKhamFind1') or ngayKhamFind# lấy cho bên box đã duyệt làm mặc địn ngày giờ render ra
     QueueToAdd = utils.load_QueueToAdd(ngayKham=ngayKhamFind)
-    Patient = utils.load_patient(ngayKham=ngayKhamFind1)
-    parse_ngayKhamFind = datetime.strptime('1111-1-1','%Y-%m-%d')
-    parse_ngayKhamFind1 = datetime.strptime('1111-1-1','%Y-%m-%d')
-    count_patients = utils.count_patient()
-    if ngayKhamFind:
-        parse_ngayKhamFind = datetime.strptime(str(ngayKhamFind), '%Y-%m-%d')
-    if ngayKhamFind1:
-        parse_ngayKhamFind1 = datetime.strptime(str(ngayKhamFind1),'%Y-%m-%d')
 
+    dt = '2022-4-5'
+    dt1 = '2022-2-2'
+
+
+
+    date_format = '%Y-%m-%d'
+
+    listKham = []
+    Patient = []
+    if ngayKhamFind:
+        dt = datetime.strptime(ngayKhamFind, date_format)
+    if ngayKhamFind1:
+        dt1 = datetime.strptime(ngayKhamFind1, date_format)
+        listKham = utils.load_session(dt1)
+
+        Patient = utils.load_patient(ngayKham=dt1.strftime(date_format))
+
+    # for i  in Patient:
+    #     kieu = type(i.dateKham)
         # key = app.config['LIST_KHAM_THEO_NGAY']
         # if key in session:
         #     del session[key]
 
 
     return render_template('duyetDanhSach.html',QueueToAdd = QueueToAdd, Patient = Patient,
-                           ngayKhamFind = parse_ngayKhamFind ,
-                           ngayKhamFind1 =parse_ngayKhamFind1,
-                            count_patients = count_patients
+                           ngayKhamFind = dt ,
+                           ngayKhamFind1 = dt1, listKham = listKham
                            )
 
 
@@ -181,30 +192,33 @@ def add_to_listKham():
         keyByDay = app.config['LIST_KHAM_THEO_NGAY']
         listKhamTheoNgay = session.get(keyByDay)
 
-
         id = str(data['id'])
         hoTen = data['hoTen']
         diaChi = data['diaChi']
         namSinh = data['namSinh']
         gioiTinh = data['gioiTinh']
         sdt = data['sdt']
+
         ngayKham = data['ngayKham']
         avatar = data['avatar']
-
         listKhamTheoNgay = session[keyByDay] if keyByDay in session else {}
-        listKham = session[key] if key in session else {}
 
-
+            # co id trong patient ko cho them
         listKhamTheoNgay[id] = {
-            "id": id,
-            "hoTen": hoTen,
-            "diaChi": diaChi,
-            "gioiTinh": gioiTinh,
-            "namSinh": namSinh,
-            "sdt": sdt,
-            "ngayKham": ngayKham,
-            "avatar": avatar
-        }
+                "id": id,
+                "hoTen": hoTen,
+                "diaChi": diaChi,
+                "gioiTinh": gioiTinh,
+                "namSinh": namSinh,
+                "sdt": sdt,
+                "ngayKham": ngayKham,
+                "avatar": avatar
+         }
+
+
+
+
+
 
 
 
@@ -212,6 +226,18 @@ def add_to_listKham():
 
         return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
 
+@app.route('/api/update_listKham')
+def update_cart(ngayKham, id):
+    key = app.config['LIST_KHAM_THEO_NGAY']
+
+    listKhamTheoNgay = session.get(key)
+    if listKhamTheoNgay and ngayKham in listKhamTheoNgay:
+        if listKhamTheoNgay[ngayKham] and id  in listKhamTheoNgay[ngayKham]:
+             listKhamTheoNgay[ngayKham][id] = {request.json}
+
+    session[key] = listKhamTheoNgay
+
+    return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
 
 
 @app.context_processor
