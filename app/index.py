@@ -200,7 +200,6 @@ def add_to_listKham():
         sdt = data['sdt']
 
         ngayKham = data['ngayKham']
-
         avatar = data['avatar']
         listKhamTheoNgay = session[keyByDay] if keyByDay in session else {}
 
@@ -226,6 +225,7 @@ def add_to_listKham():
         session['listKhamTheoNgay'] = listKhamTheoNgay
 
         return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
+
 @app.route('/api/update_listKham')
 def update_cart(ngayKham, id):
     key = app.config['LIST_KHAM_THEO_NGAY']

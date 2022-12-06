@@ -33,8 +33,6 @@
                 <p>sdt: {{bn.sdt}}</p>
                 <p>NgayKham: {{bn.ngayKham}}</p>
             </div>
-            {%for i in Patient%}
-            {%if i.id != bn.id%}
             <div class="BoxThemSuaXoa">
                 <a href="javascript:;" onclick="addToListKham(
                        '{{bn.id}}',
@@ -47,24 +45,9 @@
                     '{{bn.avatar}}',
                     )" class="btn btn-danger">Duyệt</a>
             </div>
-            {%endif%}
-            {% if i.id == bn.id%}
-             <div class="BoxThemSuaXoa">
-                <a href="javascript:;" onclick="addToListKham(
-                       '{{bn.id}}',
-                    '{{bn.hoTen}}',
-                    '{{bn.gioiTinh}}',
-                    '{{bn.namSinh}}',
-                    '{{bn.diaChi}}',
-                    '{{bn.sdt}}',
-                    '{{bn.ngayKham}}',
-                    '{{bn.avatar}}',
-                    )" class="btn btn-danger disabled">Đã duyệt</a>
-            </div>
 
-            {%endif%}
 
-            {%endfor%}
+
         </div>
         {% endfor %}
 
