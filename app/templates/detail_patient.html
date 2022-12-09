@@ -1,0 +1,27 @@
+{% extends 'layout/base.html' %}
+{% block title %}Chi tiết bệnh nhân{%endblock%}
+{% block content %}
+<h1 class="text-center text-success">CHI TIẾT BỆNH NHÂN</h1>
+
+<div class="row">
+    <div class="col-md-4 col-sm-6">
+        <img src="{{ QueueToAdd.avatar }}" class="img-fluid" alt="{{ QueueToAdd.hoTen }}"/>
+    </div>
+    <div class="col-md-8 col-sm-6">
+        <h1>Mã bệnh nhân{{ QueueToAdd.id }}</h1>
+        <p>Họ tên đầy đủ: {{ QueueToAdd.hoTen }}</p>
+        <p>Giới tính: {{ QueueToAdd.gioiTinh }}</p>
+        <p>Năm sinh: {{ QueueToAdd.namSinh }}</p>
+        <p>Địa chỉ:  {{ QueueToAdd.diaChi }}</p>
+        <p>Ngày khám:  {{ QueueToAdd.ngayKham }}</p>
+        <p> Số điện thoại: {{ QueueToAdd.sdt }}</p>
+        {% for t in QueueToAdd.tags %}
+        <span class="badge bg-success">{{ t.name }}</span>
+        {% endfor %}
+    </div>
+
+</div>
+
+<hr>
+
+{% endblock %}

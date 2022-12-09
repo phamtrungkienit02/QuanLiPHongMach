@@ -19,7 +19,7 @@ def index():
 
 
 @app.route('/dangKyKham', methods=['get', 'post'])
-def dangKyKham(baseModel):
+def dangKyKham():
     menu = utils.load_menu()
     err_msg = ''
     diaChi = ''
@@ -34,6 +34,7 @@ def dangKyKham(baseModel):
         diaChi = request.form.get('diaChi')
         gioiTinh = request.form.get('gioiTinh')
         ngayKham = request.form.get('ngayKham')
+        sdt = request.form.get("sdt")
         avatar = ''
         if request.files:
             res = cloudinary.uploader.upload(request.files['avatar'])
@@ -45,26 +46,16 @@ def dangKyKham(baseModel):
             utils.them_benhnhan_cho_duyet(hoTen=hoTen,namSinh=namSinh,diaChi=diaChi,
                                           gioiTinh=gioiTinh,
                                           ngayKham=ngayKham,
-                                          avatar=avatar)
-            return redirect(url_for(('index')))
-
+                                          avatar=avatar, sdt= sdt)
+            ok = 'chúc mừng bạn đã đăng ký xong, bây giờ chờ y tá duyệt danh sách'
+            # return redirect(url_for(('index')))
+            return render_template('index.html', ok = ok)
         except Exception as ex:
             err_msg = "He thong dang co loi !!!" + str(ex)
 
     return render_template('dangKyKham.html', err_msg=err_msg)
 
-# @app.route('/api/Add_patient', methods = ['post'])
-# def Add_patient():
-#     data = request.json
-#     id = str(data['id'])
-#     hoTen = str(data['hoTen'])
-#     diaChi = str(data['diaChi'])
-#     namSinh = datetime(data['namSinh'])
-#     gioiTinh = str(data['gioiTinh'])
-#     sdt = str(data['sdt'])
-#     ngayKham = datetime(data['ngayKham'])
-#     avatar = str(data['avatar'])
-#     utils.add_patient(id, hoTen, gioiTinh,namSinh, diaChi, sdt, ngayKham, avatar)
+
 
 @app.route('/api/saveList', methods=['get', 'post'])
 def save_list():
@@ -79,11 +70,55 @@ def save_list():
         del session[key]
         return jsonify({'status': 200})
 
-@app.route('/lapPhieuKham')
+
+
+@app.route('/lapPhieuKham', methods=['post', 'get'])
 def lapPhieuKham():
     menu = utils.load_menu()
+    err_msg = ''
+    diaChi = ''
+    hoTen = ''
+    namSinh = ''
+    gioiTinh = ''
+    avatar_path = None
+    patient = []
+    maBenhNhan = 1
+    id_in_patient = False
+    ok = "Bác sỹ đã lập thành công 1 phiếu khám!!!"
 
-    return render_template('lapPhieuKham.html')
+    if request.method.__eq__('GET'):
+        maBenhNhan = request.args.get('maBenhNhan')
+        patient = []
+        patient = utils.load_patient(id = maBenhNhan)
+        if patient is not []:
+             id_in_patient = True  # true or false
+
+    if request.method.__eq__('POST'):
+        err_msg = "co post"
+        maBenhNhanByPost = request.form.get('maBenhNhanByPost')
+
+        namSinh = request.form.get('namSinh') # vì đã có mã patient nên ô này ko cần
+        diaChi = request.form.get('diaChi') # vì đã có mã patient nên ô này ko dùng
+        trieuChung = request.form.get('trieuChung')
+        cachDung = request.form.get('cachDung')
+        duDoanBenhLy = request.form.get('duDoanBenhLy')
+        maThuoc = request.form.get('maThuoc')
+        donVi = request.form.get('donVi')
+        soLuong = request.form.get('soLuong')
+
+        try:
+            utils.them_lapphieukham(maBenhNhanByPost = maBenhNhanByPost,
+                                          trieuChung = trieuChung,
+                                          duDoanBenhLy=duDoanBenhLy,
+                                            cachDung = cachDung,
+                                          maThuoc=maThuoc, donVi = donVi, soLuong = soLuong)
+
+            return render_template('index.html', ok = ok)
+        except Exception as ex:
+            err_msg = "He thong dang co loi !!!" + str(ex)
+
+
+    return render_template('lapPhieuKham.html', err_msg=err_msg, patient = patient, id_in_patient = id_in_patient)
 
 
 
@@ -226,19 +261,14 @@ def add_to_listKham():
 
         return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
 
-@app.route('/api/update_listKham')
-def update_cart(ngayKham, id):
-    key = app.config['LIST_KHAM_THEO_NGAY']
 
-    listKhamTheoNgay = session.get(key)
-    if listKhamTheoNgay and ngayKham in listKhamTheoNgay:
-        if listKhamTheoNgay[ngayKham] and id  in listKhamTheoNgay[ngayKham]:
-             listKhamTheoNgay[ngayKham][id] = {request.json}
 
-    session[key] = listKhamTheoNgay
+@app.route("/detail_patient/<int:QueueToAdd_id>")
+def details(QueueToAdd_id):
+    menu = utils.load_menu()
 
-    return jsonify(utils.listKhamTheoNgay_stats(listKhamTheoNgay))
-
+    q = utils.get_QueueToAdd_by_id(QueueToAdd_id)
+    return render_template('detail_patient.html', QueueToAdd= q, menu = menu)
 
 @app.context_processor
 def common_attribute():
@@ -248,6 +278,7 @@ def common_attribute():
         'listKhamTheoNgay': utils.listKhamTheoNgay_stats(session.get(app.config['LIST_KHAM_THEO_NGAY']))
 
     }
+
 
 
 if __name__ == '__main__':

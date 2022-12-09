@@ -10,7 +10,7 @@ app.secret_key = "djfkhshfu9ggt3yu28y72646y@123D"
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/quanliphongmachdb?charset=utf8mb4" % quote('Admin@123')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
-app.config['LIST_KHAM_KEY'] = 'listKham'
+app.config['KEY_SAVE_PATIENT'] = 'keySavePatient'
 app.config['LIST_KHAM_THEO_NGAY'] = 'listKhamTheoNgay'
 db = SQLAlchemy(app = app)
 

@@ -11,9 +11,7 @@
 {%endif%}
 
 
-{% if  err_msg == '' %}
-<h1>thanh cong dang ky</h1>
-{%endif%}
+
 
 <div>
     {% if diaChi != Null %}
@@ -42,7 +40,7 @@
             <label for="namSinh">Năm sinh:</label>
             <input type="date" class="form-control" placeholder="Nhập năm sinh..." name="namSinh" id="namSinh">
         </div>
-         <div class="form-group">
+        <div class="form-group">
             <label for="sdt">Số điện thoại:</label>
             <input type="number" class="form-control" placeholder="Nhập số điện thoại..." name="sdt" id="sdt">
         </div>
@@ -56,23 +54,24 @@
 
         <div class="form-group">
             <label for="ngayKham">Chọn ngày khám:</label>
-            <input type="date" class="form-control"  name="ngayKham" id="ngayKham">
+            <input type="date" class="form-control" name="ngayKham" id="ngayKham">
         </div>
         <div class="form-group up-file-img ">
             <label for="avatar">Ảnh bệnh nhân</label>
-            <input type="file" class="form-control" id = 'avatar' name = 'avatar'>
+            <input type="file" class="form-control" id='avatar' name='avatar'>
         </div>
 
 
-         <div class="form-group form-check">
+        <div class="form-group form-check">
             <label class="form-check-label">
                 <input class="form-check-input" type="checkbox"> Remember me
             </label>
         </div>
 
-         <div class="btnSubmitFormDangKyKham ">
-            <button type="submit" class="btn btn-primary btn-block form-control">Submit</button>
-
+        <div class="btnSubmitFormDangKyKham ">
+            <label class="form-check-label">
+                <input type="submit" class="btn btn-info" value="Gửi">
+            </label>
         </div>
     </form>
 </div>

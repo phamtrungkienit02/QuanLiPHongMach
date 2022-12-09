@@ -23,22 +23,37 @@ def load_products():
     return read_json(os.path.join(app.root_path, 'data/products.json'))
 
 
-
-
-def load_QueueToAdd(ngayKham = None):
+def load_QueueToAdd(ngayKham=None):
     queue = QueueToAdd.query.all()
     if ngayKham:
-        queue = QueueToAdd.query.filter(QueueToAdd.ngayKham.__eq__(ngayKham) )
-
+        queue = QueueToAdd.query.filter(QueueToAdd.ngayKham.__eq__(ngayKham))
 
     return queue
+
+
 def load_menu():
     return read_json(os.path.join(app.root_path, 'data/menu.json'))
 
 
-def them_benhnhan_cho_duyet(hoTen, namSinh, diaChi, gioiTinh,ngayKham,sdt, avatar):
-    p1 = QueueToAdd(hoTen=hoTen, namSinh=namSinh, diaChi=diaChi, sdt = sdt, gioiTinh=gioiTinh,ngayKham = ngayKham,avatar = avatar)
+def them_benhnhan_cho_duyet(hoTen, namSinh, diaChi, gioiTinh, ngayKham, sdt, avatar):
+    p1 = QueueToAdd(hoTen=hoTen, namSinh=namSinh, diaChi=diaChi, sdt=sdt, gioiTinh=gioiTinh, ngayKham=ngayKham,
+                    avatar=avatar)
     db.session.add(p1)
+    db.session.commit()
+
+
+def them_lapphieukham(maBenhNhanByPost,
+                      trieuChung,
+                      duDoanBenhLy,
+                      cachDung,
+                      maThuoc, donVi, soLuong):
+    p1 = lapPhieuKhamTB(maBenhNhan=maBenhNhanByPost,
+                        trieuChung=trieuChung,
+                        duDoanBenhLy=duDoanBenhLy,
+                        cachDung=cachDung,
+                        maThuoc=maThuoc, donVi=donVi, soLuong=soLuong)
+    db.session.add(p1)
+
     db.session.commit()
 
 
@@ -86,54 +101,84 @@ def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
-
-def check_id_in_patient(sdt):
+def check_id_in_patient(id=None):
     for i in Patient:
-        if sdt.__eq__(i.phone):
+        if int(id).__eq__(int(i.id)):
             return True
     return False
+
+
 def add_patient(listKhamTheoNgay):
     date_format = '%Y-%m-%d %H:%M:%D'
     if listKhamTheoNgay:
 
         for c in listKhamTheoNgay.values():
             d = Patient(
-                        id=c['id'],
-                        name=c['hoTen'],
+                id=c['id'],
+                name=c['hoTen'],
 
-                        sex=c['gioiTinh'],
-                        birthday =c['namSinh'],
-                        address = c['diaChi'],
-                        dateKham = c['ngayKham'],
-                        avatar = c['avatar'],
-                        phone = c['sdt'])
+                sex=c['gioiTinh'],
+                birthday=c['namSinh'],
+                address=c['diaChi'],
+                dateKham=c['ngayKham'],
+                avatar=c['avatar'],
+                phone=c['sdt'])
             db.session.add(d)
 
         db.session.commit()
 
-def load_patient(ngayKham =  None):
+
+def add_lapphieukham(listKhamTheoNgay):
+    date_format = '%Y-%m-%d %H:%M:%D'
+    if listKhamTheoNgay:
+
+        for c in listKhamTheoNgay.values():
+            d = Patient(
+                id=c['id'],
+                name=c['hoTen'],
+
+                sex=c['gioiTinh'],
+                birthday=c['namSinh'],
+                address=c['diaChi'],
+                dateKham=c['ngayKham'],
+                avatar=c['avatar'],
+                phone=c['sdt'])
+            db.session.add(d)
+
+        db.session.commit()
+
+
+def load_patient(ngayKham=None, id=None):
     patient = Patient.query.all()
     if ngayKham:
-        patient = Patient.query.filter(Patient.dateKham.__eq__(ngayKham) )
-
+        patient = Patient.query.filter(Patient.dateKham.__eq__(ngayKham))
+    if id:
+        id_songuyen = int(id)
+        patient = Patient.query.filter(Patient.id.__eq__(id_songuyen))
 
     return patient
-def load_session(ngayKhamFind = None):
+
+
+def load_session(ngayKhamFind=None):
     listKhamTheoNgay = session.get(app.config['LIST_KHAM_THEO_NGAY'])
     listKham = []
     if listKhamTheoNgay:
-        for i  in listKhamTheoNgay.values():
+        for i in listKhamTheoNgay.values():
             ngayKham = datetime.strptime(i['ngayKham'], '%Y-%m-%d %H:%M:%S')
-            if ngayKham.year == ngayKhamFind.year  and ngayKham.month == ngayKhamFind.month and ngayKham.day == ngayKhamFind.day:
+            if ngayKham.year == ngayKhamFind.year and ngayKham.month == ngayKhamFind.month and ngayKham.day == ngayKhamFind.day:
                 listKham.append(i)
     return listKham
 
 
-def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind = None):
+def get_QueueToAdd_by_id(id):
+    return QueueToAdd.query.get(id)
+
+
+def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind=None):
     total_amount = 0
 
     if listKhamTheoNgay:
-            for b in listKhamTheoNgay.values():
-                total_amount += 1
+        for b in listKhamTheoNgay.values():
+            total_amount += 1
 
-    return  {'total_amount': total_amount}
+    return {'total_amount': total_amount}

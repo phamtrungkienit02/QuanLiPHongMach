@@ -62,6 +62,8 @@ class Patient(BaseModel):
     # receipts = relationship('Receipt', backref='patient', lazy=True)
     prescriptions = relationship('Prescription', backref='patient', lazy=False)
     Anamnesis_details = relationship('AnamnesisDetail', backref='patient', lazy=True)
+    lapphieukham_tb = relationship('lapPhieuKhamTB', backref='patient', lazy=False)
+
     def __str__(self):
         return self.name
 
@@ -119,6 +121,7 @@ class Drug(BaseModel):
     description = Column(String(100))
     category_id = Column(Integer, ForeignKey(Category.id), nullable=False)
     prescription_details = relationship('PrescriptionDetail', backref='drug', lazy=True)
+    lapphieukham_tb = relationship('lapPhieuKhamTB', backref='drug', lazy=False)
     def __str__(self):
         return self.name
 
@@ -143,10 +146,27 @@ class PrescriptionDetail(db.Model):
     #     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
     #     details = relationship('ReceiptDetail', backref='receipt', lazy=True)
 
+class lapPhieuKhamTB(BaseModel):
+
+    maBenhNhan  = Column(Integer, ForeignKey(Patient.id), nullable = False)
+    trieuChung = Column(String(200))
+    duDoanBenhLy = Column(String(200))
+    cachDung = Column(String(200))
+    maThuoc = Column(Integer, ForeignKey(Drug.id), nullable = False)
+    donVi = Column(String(20), nullable = False)
+    soLuong = Column(Integer, nullable=False)
+
+
+    def __str__(self):
+        return self.trieuChung
+
 
 if __name__ == "__main__":
     with app.app_context():
+
         db.create_all()
+        SET_FOREIGN_KEY_CHECKS = 0
+        # db.drop_all()
         import hashlib
 
         passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
