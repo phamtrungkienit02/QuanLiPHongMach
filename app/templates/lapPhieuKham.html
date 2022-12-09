@@ -4,33 +4,74 @@
 {%block header%}
 {%include 'layout/header.html'%}
 {%endblock%}
+{%block js%}
+<script src="{{url_for('static', filename = 'js/lapPhieuKham.js')}}"></script>
+{%endblock%}
 
+{% block css%}
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/lapPhieuKham.css')}}">
+{%endblock%}
 {% block content%}
 <h1 style="text-align:center">Lap Phieu Kham</h1>
 <div class="container boxFormDangKyKham">
     <h1 class="txtTitleBoxFormDangKyKham">LẬP PHIẾU KHÁM</h1>
-    <form method="get" action="{{url_for('dangKyKham')}}">
+    {%if err_msg%}
+    <h1>{{err_msg}}</h1>
+    {%endif%}
+    {%if id_in_patient == False%}
+    <h1>Hệ thống không tồn tại bệnh nhân </h1>
+    {%endif%}
+
+    <form class="checkedMaBenhNhan d-flex" method='get'>
         <div class="form-group">
             <label for="maBenhNhan">Mã bênh nhân</label>
-            <input class="form-control" id="maBenhNhan" name="maBenhNhan">
-
+            <input type="number" class="form-control" id="maBenhNhan" name="maBenhNhan">
+            <button type="submit" class="form-control btn">check</button>
         </div>
-          <div class="form-group">
+
+        <!--        <div class="alert alert-info">checked</div>-->
+    </form>
+    <form class="row" method="post" action="{{url_for('lapPhieuKham')}}">
+        {%if patient%}
+
+        {% for i in patient %}
+
+        <div class="col-3">
+            {%if loop.length %}
+            <img class="img-fluid rounded-circle" src="{{i.avatar}}" alt="">
+        </div>
+        <div class="form-group">
+            <label for="maBenhNhanByPost">Mã bênh nhân</label>
+            <input type="number" class="form-control" id="maBenhNhanByPost" name="maBenhNhanByPost" value="{{i.id}}"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="hoTen">Họ tên: </label>
+            <input type="text" class="form-control" placeholder="autoInputName" required name="hoTen" id="hoTen"
+                   value="{{i['name'] or Null }}">
+        </div>
+        <div class="form-group">
             <label for="namSinh">Năm sinh:</label>
-            <input type="date" class="form-control" placeholder="Nhập năm sinh..." name="namSinh" id="namSinh">
+            <input type="text" class="form-control" placeholder="Nhập năm sinh..." required name="namSinh" id="namSinh"
+                   value="{{i['birthday'] or Null }}">
         </div>
         <br>
         <div class="form-group">
             <label for="diaChi">Thông tin địa chỉ:</label>
-            <input type="text" class="form-control" placeholder=" Biến địa chỉ" name="diaChi" required id="diaChi">
+            <input type="text" class="form-control" placeholder=" Biến địa chỉ" name="diaChi" required
+                   id="diaChi" value="{{i['address'] or Null }}">
         </div>
+        {%endif%}
+        {%endfor%}
+        {%endif%}
+
 
         <br>
         <br>
 
         <div class="form-group">
             <label for="trieuChung">Triệu chứng</label>
-            <textarea class="form-control" id="trieuChung" rows="3"></textarea>
+            <textarea class="form-control" name="trieuChung" id="trieuChung" rows="3"></textarea>
         </div>
         <br>
         <div class="form-group">
@@ -43,20 +84,29 @@
         <br>
 
         <div class="form-group">
-            <label for="maThuoc">Mã thuốc</label>
-            <select class="form-control" id="maThuoc">
-                <option>APX</option>
-                <option>ESTRA-98PT</option>
-                <option>COVID-Test</option>
-                <option>XINOFAM</option>
-                <option>ZENECA</option>
-            </select>
+            <!--            <label for="maThuoc">Mã thuốc</label>-->
+            <!--            <select name ="maThuoc" class="form-control" id="maThuoc" required>-->
+            <!--                <option selected = "selected">APX</option>-->
+            <!--                <option>ESTRA-98PT</option>-->
+            <!--                <option>COVID-Test</option>-->
+            <!--                <option>XINOFAM</option>-->
+            <!--                <option>ZENECA</option>-->
+            <!--            </select>-->
 
+
+            <label for="maThuoc">Mã thuốc</label>
+            <select name="maThuoc" class="form-control" id="maThuoc" required>
+                <option selected="selected">1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
             <label for="donVi">Đơn vị</label>
-            <select class="form-control" id="donVi">
-                <option>Vỉ</option>
-                <option>Chai</option>
-                <option>Lọ</option>
+            <select name="donVi" class="form-control" id="donVi" required>
+                <option selected="selected" value="Vỉ">Vỉ</option>
+                <option value="Chai">Chai</option>
+                <option value="Lọ">Lọ</option>
             </select>
 
 
@@ -64,7 +114,7 @@
             <input type="number" class="form-control" value="1" name="soLuong" id="soLuong">
 
             <label for="cachDung">Cách dùng</label>
-            <textarea class="form-control" id="cachDung" rows="3"></textarea>
+            <textarea class="form-control" id="cachDung" name="cachDung" rows="3"></textarea>
             <br>
         </div>
         <div class="form-group form-check">
@@ -75,9 +125,9 @@
         <br>
 
 
-        <div class="btnSubmitFormDangKyKham form-group ">
-            <button type="button" class="btn btn-primary btn-lg btn-block form-control">Lập phiếu khám</button>
-        </div>
+        <label class="form-check-label">
+            <input type="submit" class="btn btn-info" value="Lập phiếu khám">
+        </label>
 
     </form>
 </div>

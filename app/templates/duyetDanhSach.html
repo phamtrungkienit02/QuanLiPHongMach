@@ -44,74 +44,75 @@
                     '{{bn.ngayKham}}',
                     '{{bn.avatar}}',
                     )" class="btn btn-danger">Duyệt</a>
-            </div>
+                <a href="/detail_patient/{{bn.id}}" class="btn btn-primary">Xem chi tiết</a>
 
+            </div>
 
 
         </div>
         {% endfor %}
 
     </div>
+      <div class="BoxDaDuyet col-6">
+            <form>
+                <label for="ngayKhamFind1">danh sách khám theo ngày</label>
+                <input type="date" name="ngayKhamFind1" id="ngayKhamFind1">
+                <button type="submit" class="btn btn-primary">Xác nhận</button>
+            </form>
+            <div class="BoxDaDuyetHeader col-12 text-center ">
+                <p class="nav-link text-secondary" href="/cart">&#128722; Danh sách khám
+                    ngày: {{ngayKhamFind1}} </p>
 
-    <div class="BoxDaDuyet col-6">
-        <form>
-            <label for="ngayKhamFind1">danh sách khám theo ngày</label>
-            <input type="date" name="ngayKhamFind1" id="ngayKhamFind1">
-            <button type="submit" class="btn btn-primary">Xác nhận</button>
-        </form>
-        <div class="BoxDaDuyetHeader col-12 text-center ">
-            <p class="nav-link text-secondary" href="/cart">&#128722; Danh sách khám
-                ngày: {{ngayKhamFind1}} </p>
-
-            <p href="">Số lượng:<span class="badge bg-danger totalBox">/40</span></p>
-        </div>
-        <button class="btn btn-danger" onclick="saveList()" class="btn btn-danger" type="submit">
-
-            Lưu danh sánh
-        </button>
-        <h2>{{ngayKhamFind1}}</h2>
-
-        <div class="d-flex listKham">
-            {% if session.get("listKhamTheoNgay")%}
-            {%for i in Patient %}
-
-
-            <div class="listKhamItem">
-                <div class="listKhamItemImg">
-                    <img src="{{i.avatar}}" alt="imgPatient">
-                </div>
-                <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
-
-                <div class="listKhamItemInfo">
-                    <span>STT: {{i.id}}</span>
-                    <span>họ tên: {{i['name']}} </span>
-                    <span>ngày khám: {{i['dateKham']}} </span>
-                </div>
+                <p href="">Số lượng:<span class="badge bg-danger totalBox">/40</span></p>
             </div>
-            {%endfor%}
+            <button class="btn btn-danger" onclick="saveList()" class="btn btn-danger" type="submit">
+
+                Lưu danh sánh
+            </button>
+            <h2>{{ngayKhamFind1}}</h2>
+
+            <div class="d-flex listKham">
+                {% if session.get("listKhamTheoNgay")%}
+                {%for i in Patient %}
 
 
-            {%for i in listKham %}
+                <div class="listKhamItem">
+                    <div class="listKhamItemImg">
+                        <img src="{{i.avatar}}" alt="imgPatient">
+                    </div>
+                    <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
 
-            <div class="listKhamItem">
-                <div class="listKhamItemImg">
-                    <img src="{{i.avatar}}" alt="imgPatient">
+                    <div class="listKhamItemInfo">
+                        <span>STT: {{i.id}}</span>
+                        <span>họ tên: {{i['name']}} </span>
+                        <span>ngày khám: {{i['dateKham']}} </span>
+                    </div>
                 </div>
-                <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
+                {%endfor%}
 
-                <div class="listKhamItemInfo">
-                    <span>STT: {{i.id}}</span>
-                    <span>họ tên: {{i['hoTen']}} </span>
-                    <span>ngày khám: {{i['ngayKham']}} </span>
+
+                {%for i in listKham %}
+
+                <div class="listKhamItem">
+                    <div class="listKhamItemImg">
+                        <img src="{{i.avatar}}" alt="imgPatient">
+                    </div>
+                    <i class="listKhamItemRemove" cstyle="color: red">&#10062;</i>
+
+                    <div class="listKhamItemInfo">
+                        <span>STT: {{i.id}}</span>
+                        <span>họ tên: {{i['hoTen']}} </span>
+                        <span>ngày khám: {{i['ngayKham']}} </span>
+                    </div>
                 </div>
+
+                {%endfor%}
+                {%endif%}
             </div>
 
-            {%endfor%}
-            {%endif%}
+
         </div>
 
-
-    </div>
 </div>
 
 
