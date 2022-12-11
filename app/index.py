@@ -280,6 +280,22 @@ def common_attribute():
     }
 
 
+@app.route('/admin-login', methods=['post'])
+def sigin_admin():
+        err_msg = ''
+        username = request.form['username']
+        password = request.form['password']
+
+        user = utils.check_login(username=username,
+                                 password=password,
+                                 role=UserRole.ADMIN)
+        if user:
+            login_user(user=user)
+
+        else:
+            err_mgs = "Tài khoản hoặc mật khẩu không chính xác"
+        return redirect('/admin')
 
 if __name__ == '__main__':
+    from app.admin import *
     app.run(debug=True)
