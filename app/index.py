@@ -217,6 +217,8 @@ def admin():
 
     return render_template('admin.html', menu=menu)
 
+
+
 @app.route('/api/listKham', methods = ['post'])
 def add_to_listKham():
 
@@ -280,6 +282,55 @@ def common_attribute():
     }
 
 
+@app.route('/admin-login', methods=['post'])
+def sigin_admin():
+        err_msg = ''
+        username = request.form['username']
+        password = request.form['password']
+
+        user = utils.check_admin(username=username,
+                                 password=password,
+                                 role="ADMIN")
+        if user:
+            login_user(user=user)
+
+        else:
+            err_mgs = "Tài khoản hoặc mật khẩu không chính xác"
+        return redirect('/admin')
+
+@app.route('/register', methods=['get', 'post'])
+def user_register():
+    err_msg = ""
+    #kiem tra get hay post
+    if request.method.__eq__('POST'):
+        name = request.form.get('name')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+        confirm = request.form.get('confirm')
+        avatar_path = None
+
+        try:
+            #kiem tra mat khau confirm
+            if password.strip().__eq__(confirm.strip()):
+                #chu y: avatar la files khong phai form
+                avatar = request.files.get('avatar')
+                if avatar:
+                    res = cloudinary.uploader.upload(avatar)
+                    avatar_path = res['secure_url']
+
+                utils.add_user(name=name, username=username,
+                               password=password, email=email,
+                               avatar=avatar_path)
+                return redirect(url_for('login_my_user'))
+
+            else:
+                err_msg = 'Mật khẩu không khớp!!!'
+        except Exception as ex:
+            err_msg = "Hệ thống có lỗi: " + str(ex)
+
+    return render_template('register.html', err_msg=err_msg)
 
 if __name__ == '__main__':
+    from app.admin import *
     app.run(debug=True)

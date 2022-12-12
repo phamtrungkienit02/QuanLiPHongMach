@@ -88,11 +88,11 @@ def check_kind_user_to_render_menu():
             for i in menu:
                 if i.userUse == 'user':
                     menuOfUser.append(i)
-        if current_user.user_role == UserRole.ADMIN:
-
-            for i in menu:
-                if i.userUse == 'admin':
-                    menuOfUser.append(i)
+        # if current_user.user_role == UserRole.ADMIN:
+        #
+        #     for i in menu:
+        #         if i.userUse == 'admin':
+        #             menuOfUser.append(i)
 
     return menuOfUser
 
@@ -182,3 +182,24 @@ def listKhamTheoNgay_stats(listKhamTheoNgay, ngayKhamFind=None):
             total_amount += 1
 
     return {'total_amount': total_amount}
+
+def check_admin(username, password, role):
+    if username and password:
+        # luu bam bang thuat toan nao thi kiem tra cung bam bang thuat toan do=> ma bam giong nhau
+        password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+        # username lay first vi chi co 1 khong co tra ra null
+        return User.query.filter(User.username.__eq__(username.strip()),
+                                 User.password.__eq__(password),
+                                 User.user_role.__eq__(role)).first()
+
+def add_user(name, username, password, **kwargs):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+    # strip() cat cac khoang trang
+    user = User(name=name.strip(),
+                username=username.strip(),
+                password=password,
+                # email=kwargs.get('email'),
+                avatar=kwargs.get('avatar'))
+
+    db.session.add(user)
+    db.session.commit()
