@@ -28,36 +28,37 @@
 
                 {% if current_user.is_authenticated %}
                 {% for item in menu %}
-                   {%  if item.nameFunc == 'dangKyKham' and (current_user.user_role == "USER" or current_user.is_anonymous )%}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
-                        </li>
-                    {% endif %}
+                {% if item.nameFunc == 'dangKyKham' and (current_user.user_role == "USER" or current_user.is_anonymous
+                )%}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                </li>
+                {% endif %}
 
-                {%  if item.nameFunc == 'lapPhieuKham' and current_user.user_role == "BACSY"  %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
-                        </li>
-                    {% endif %}
+                {% if item.nameFunc == 'lapPhieuKham' and current_user.user_role == "BACSY" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                </li>
+                {% endif %}
 
 
-                 {%  if item.nameFunc == 'duyetDanhSach' and current_user.user_role == "YTA" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
-                        </li>
-                    {% endif %}
+                {% if item.nameFunc == 'duyetDanhSach' and current_user.user_role == "YTA" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                </li>
+                {% endif %}
 
-                 {%  if item.nameFunc == 'thanhToan' and current_user.user_role == "NVTN" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
-                        </li>
-                    {% endif %}
+                {% if item.nameFunc == 'thanhToan' and current_user.user_role == "NVTN" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
+                </li>
+                {% endif %}
 
-                 {%  if item.nameFunc == 'admin' and current_user.user_role == "ADMIN" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>
-                        </li>
-                    {% endif %}
+                <!--                 {%  if item.nameFunc == 'admin' and current_user.user_role == "ADMIN" %}-->
+                <!--                        <li class="nav-item">-->
+                <!--                            <a class="nav-link" href="{{url_for(item.nameFunc)}}">{{ item.name }}</a>-->
+                <!--                        </li>-->
+<!--                {% endif %}-->
 
 
                 {% endfor %}
@@ -74,6 +75,10 @@
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link text-success" href="/dangNhap">Đăng nhập</a>
+                </li>
+                <li class="nav-item">
+                    <!--      text-info hien mau chu xanh, danger do-->
+                    <a class="nav-link text-danger" href="{{ url_for('user_register') }}">Đăng kí</a>
                 </li>
 
                 {% endif %}
