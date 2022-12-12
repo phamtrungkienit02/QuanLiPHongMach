@@ -88,11 +88,11 @@ def check_kind_user_to_render_menu():
             for i in menu:
                 if i.userUse == 'user':
                     menuOfUser.append(i)
-        if current_user.user_role == UserRole.ADMIN:
-
-            for i in menu:
-                if i.userUse == 'admin':
-                    menuOfUser.append(i)
+        # if current_user.user_role == UserRole.ADMIN:
+        #
+        #     for i in menu:
+        #         if i.userUse == 'admin':
+        #             menuOfUser.append(i)
 
     return menuOfUser
 
