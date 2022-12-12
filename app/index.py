@@ -211,11 +211,11 @@ def load_user(user_id):
     return utils.get_user_by_id(user_id)
 
 
-@app.route('/admin')
-def admin():
-    menu = utils.load_menu()
-
-    return render_template('admin.html', menu=menu)
+# @app.route('/admin')
+# def admin():
+#     menu = utils.load_menu()
+#
+#     return render_template('admin.html', menu=menu)
 
 @app.route('/api/listKham', methods = ['post'])
 def add_to_listKham():
@@ -286,9 +286,9 @@ def sigin_admin():
         username = request.form['username']
         password = request.form['password']
 
-        user = utils.check_login(username=username,
+        user = utils.check_admin(username=username,
                                  password=password,
-                                 role=UserRole.ADMIN)
+                                 role="ADMIN")
         if user:
             login_user(user=user)
 
