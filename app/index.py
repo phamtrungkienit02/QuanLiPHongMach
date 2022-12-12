@@ -211,12 +211,12 @@ def load_user(user_id):
     return utils.get_user_by_id(user_id)
 
 
-# @app.route('/admin')
-# def admin():
-#     # menu = utils.load_menu()
-#
-#    # return render_template('admin/index.html')
-#     return redirect('/admin')
+@app.route('/admin')
+def admin():
+    menu = utils.load_menu()
+
+    return render_template('admin.html', menu=menu)
+
 
 
 @app.route('/api/listKham', methods = ['post'])
