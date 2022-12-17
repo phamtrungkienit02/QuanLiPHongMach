@@ -211,11 +211,11 @@ def load_user(user_id):
     return utils.get_user_by_id(user_id)
 
 
-@app.route('/admin')
+@app.route('/administrator')
 def admin():
     menu = utils.load_menu()
 
-    return render_template('admin.html', menu=menu)
+    return render_template('index.html', menu=menu)
 
 
 
@@ -296,6 +296,7 @@ def sigin_admin():
 
         else:
             err_mgs = "Tài khoản hoặc mật khẩu không chính xác"
+        #return render_template('admin.html')
         return redirect('/admin')
 
 @app.route('/register', methods=['get', 'post'])

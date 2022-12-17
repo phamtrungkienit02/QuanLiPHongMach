@@ -203,3 +203,8 @@ def add_user(name, username, password, **kwargs):
 
     db.session.add(user)
     db.session.commit()
+
+def category_stats():
+    return db.session.query(Category.id, Category.name, func.count(Drug.id)) \
+        .join(Drug, Category.id.__eq__(Drug.category_id), isouter=True) \
+        .group_by(Category.id, Category.name).all()
