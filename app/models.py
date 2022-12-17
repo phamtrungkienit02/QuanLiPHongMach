@@ -67,6 +67,12 @@ class Patient(BaseModel):
     def __str__(self):
         return self.name
 
+class QuiDinhSoLuong(BaseModel):
+    __tablename__ = "qui_dinh_so_luong"
+    number = Column(Integer, default=40)
+    medical_report = relationship('MedicalReport', backref='quiDinhSoLuong', lazy=False)
+
+
 class MedicalReport(BaseModel):
     created_date = Column(Date, default=datetime.now())
     stt = Column(Integer, autoincrement=True)
@@ -74,8 +80,8 @@ class MedicalReport(BaseModel):
     chuan_doan = Column(String(50), nullable=False)
     patients = Column(Integer, ForeignKey(Patient.id), nullable=False)
     prescriptions = relationship('Prescription', backref='medicalReport', lazy=False)
-    def __str__(self):
-        return self.name
+    qui_dinh_so_luong = Column(Integer, ForeignKey(QuiDinhSoLuong.id), nullable=False)
+
 
 class Prescription(BaseModel):
     created_date = Column(Date, default=datetime.now())
@@ -83,6 +89,10 @@ class Prescription(BaseModel):
     medical_reports = Column(Integer, ForeignKey(MedicalReport.id), nullable=False)
     prescription_details = relationship('PrescriptionDetail', backref='prescription', lazy=True)
 
+class TienKham(BaseModel):
+    __tablename__ = "tien_kham"
+    price = Column(Float, default=100000)
+    drug_price_bill = relationship('DrugPriceBill', backref='tienKham', lazy=False)
 
 class DrugPriceBill(BaseModel):
     create_date = Column(Date, nullable=False)
@@ -90,8 +100,8 @@ class DrugPriceBill(BaseModel):
     medical_costs = Column(Float, default=50000)
     patients = Column(Integer, ForeignKey(Patient.id), nullable=False)
     prescription_details = relationship('PrescriptionDetail', backref='drugPriceBill', lazy=False)
-    def __str__(self):
-        return self.name
+    tien_kham = Column(Integer, ForeignKey(TienKham.id), nullable=False)
+
 class Anamnesis(BaseModel):
     anamesis = Column(String(50))
     Anamnesis_details = relationship('AnamnesisDetail', backref='anamesis', lazy=True)
@@ -155,36 +165,35 @@ class lapPhieuKhamTB(BaseModel):
     maThuoc = Column(Integer, ForeignKey(Drug.id), nullable = False)
     donVi = Column(String(20), nullable = False)
     soLuong = Column(Integer, nullable=False)
-
-
     def __str__(self):
         return self.trieuChung
 
 
+
+
 if __name__ == "__main__":
     with app.app_context():
-
         db.create_all()
-        SET_FOREIGN_KEY_CHECKS = 0
-        # db.drop_all()
-        import hashlib
-
-        passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        u1 = User(name="Tu09", username="123", password=passwordU1, avatar="./static/img/logo.png", active=True,
-                  user_role="USER")
-
-        passwordU2 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        u2 = User(name="bacsy1", username="bacsy1", password=passwordU2, avatar="./static/img/logo.png", active=True,
-                  user_role="BACSY")
-
-        passwordU3 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        u3 = User(name="yta1", username="yta1", password=passwordU3, avatar="./static/img/logo.png", active=True,
-                  user_role="YTA")
-
-        passwordU4 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
-        u4 = User(name="nvtn1", username="nvtn1", password=passwordU4, avatar="./static/img/logo.png", active=True,
-                  user_role="NVTN")  # nhân viên thu ngân
-
-        db.session.add_all([u1, u2, u3, u4])
+        # SET_FOREIGN_KEY_CHECKS = 0
+        # # db.drop_all()
+        # import hashlib
+        #
+        # passwordU1 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        # u1 = User(name="Tu09", username="123", password=passwordU1, avatar="./static/img/logo.png", active=True,
+        #           user_role="USER")
+        #
+        # passwordU2 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        # u2 = User(name="bacsy1", username="bacsy1", password=passwordU2, avatar="./static/img/logo.png", active=True,
+        #           user_role="BACSY")
+        #
+        # passwordU3 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        # u3 = User(name="yta1", username="yta1", password=passwordU3, avatar="./static/img/logo.png", active=True,
+        #           user_role="YTA")
+        #
+        # passwordU4 = str(hashlib.md5('123456'.encode('utf-8')).hexdigest())
+        # u4 = User(name="nvtn1", username="nvtn1", password=passwordU4, avatar="./static/img/logo.png", active=True,
+        #           user_role="NVTN")  # nhân viên thu ngân
+        #
+        # db.session.add_all([u1, u2, u3, u4])
         db.session.commit()
 

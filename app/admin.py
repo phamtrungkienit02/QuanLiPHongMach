@@ -2,7 +2,7 @@ from app import app, db
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import AdminIndexView
-from app.models import Category, UserRole, Drug
+from app.models import Category, UserRole, Drug, QuiDinhSoLuong, TienKham
 from flask_login import current_user, logout_user
 from flask import redirect, request
 #expose bam vao logout
@@ -82,12 +82,14 @@ class MyAdminIndex(AdminIndexView):
 #name ten trang admin
 admin = Admin(app=app,
               name="E-commerce Administration",
-              template_mode='bootstrap4')
-             # index_view=MyAdminIndex())
+              template_mode='bootstrap4',
+              index_view=MyAdminIndex())
 
 #authenticatedmodelview past ModelView
 #them db.session vi trang admin co the chinh sua(session la mot bien cua sever can secret key de ma hoa)
 admin.add_view(AuthenticatedModelView(Category, db.session))
 admin.add_view(ProductView(Drug, db.session))
+# admin.add_view(AuthenticatedModelView(QuiDinhSoLuong, db.session))
+# admin.add_view(AuthenticatedModelView(TienKham, db.session))
 # admin.add_view(StatsView(name='Stats'))
 admin.add_view(LogoutView(name='Logout'))
